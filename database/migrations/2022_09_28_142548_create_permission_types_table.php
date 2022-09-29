@@ -13,7 +13,7 @@ class CreatePermissionTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('permission__types', function (Blueprint $table) {
+        Schema::create('permission_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreatePermissionTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('permission__types');
+        Schema::dropIfExists('permission_types');
     }
 }

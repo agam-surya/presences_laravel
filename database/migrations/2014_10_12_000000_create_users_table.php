@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id')->unique();
+            $table->id()->unique();
             // $table->foreignId('role_id');
             // $table->foreign('role_id')->references('id')->on('role')->cascadeOnDelete();
             // $table->foreignId('position_id');
