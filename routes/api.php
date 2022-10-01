@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\API\AuthController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,8 +19,7 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::group(['middleware=>auth:sanctum'], function () {
-    // api yang diakses
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
-
 Route::post('/login', [AuthController::class, 'login']);
