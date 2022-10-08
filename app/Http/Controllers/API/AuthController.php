@@ -81,7 +81,7 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (!count($user->tokens()->get()) == 0) {
-                $respon = $this->responseApi(403, '', 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
+                $respon = $this->responseApi(403, $user->name, 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
                 return response()->json($respon, 403);
             }
 
