@@ -6,59 +6,93 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+
+    public function responseApi($statusCode, $user = '', $message, $description = '', $token = '')
+    {
+        return [
+            "statusCode" => $statusCode,
+            "user" => $user,
+            "message" => $message,
+            "description" => $description,
+            "token" => $token,
+        ];
+    }
+
+    public function register(Request $request)
+    {
+        // validate request
+        $validate = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'role_id' => 'required',
+            'position_id' => 'required',
+        ]);
+
+        // create user
+        $user = User::create([
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+            'password' => bcrypt($validate['password']),
+            'role_id' => $validate['role_id'],
+            'remember_token' => 'null',
+            'phone' => '081081091',
+            'position_id' => $validate['position_id'],
+            'image' => 'image',
+            'address' => 'address',
+        ]);
+
+        // return user response
+
+        return response([
+            'user' => $user,
+        ]);
+    }
+
+    function login(Request $request)
     {
 
         $validate = Validator::make($request->all(), [
-            'email' => 'required',
-            'password' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6',
         ]);
 
+        // tidak tersedia
         if ($validate->fails()) {
-            $respon = [
-                'msg' => 'Validator error',
-                'errors' => $validate->errors(),
-                'content' => null,
-            ];
-            return response()->json($respon, 200);
+            $respon = $this->responseApi(403, '', $validate->validated(), '');
+
+            return response()->json($respon, 403);
         } else {
+            // tidak sesuai
             $credentials = request(['email', 'password']);
             if (!Auth::attempt($credentials)) {
-                $respon = [
-                    'msg' => 'Unathorized',
-                    'errors' => null,
-                    'content' => null,
-                ];
-                return response()->json($respon, 401);
+                $respon = $this->responseApi(403, '', 'invalid credentials', '');
+
+                return response()->json($respon, 403);
             }
+
+
+            // cek jika token user tidak kosong => supaya mencegah bisa lebih dari 1 kali login pada waktu bersamaan, harus logout dulu sebelum login diperangkat lain
 
             $user = User::where('email', $request->email)->first();
-            if (!Hash::check($request->password, $user->password, [])) {
-                throw new \Exception('Error in Login');
-            }
 
-            // cek jika token user tidak kosong
             if (!count($user->tokens()->get()) == 0) {
-                return response()->json([
-                    'message' => 'akun sedang aktif',
-                    'jumlah token' => count($user->tokens()->get()),
-                ], 401);
+                $respon = $this->responseApi(403, '', 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
+                return response()->json($respon, 403);
             }
 
             $tokenResult = $user->createToken('token-auth')->plainTextToken;
             $respon = [
-                'msg' => 'Login successfully',
-                'content' => [
-                    'status_code' => 200,
-                    'access_token' => $tokenResult,
-                    'token_type' => 'Bearer',
-                ]
+                'message' => 'Login successfully',
+                'user' => auth()->user(),
+                'token' => $tokenResult,
+
             ];
+            $this->responseApi(200, auth()->user(), 'Login successfully', '', $tokenResult);
             return response()->json($respon, 200);
         }
     }
@@ -66,11 +100,31 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
-        $user->currentAccessToken()->delete();
+        $user->tokens()->delete();
         $respon = [
-            'msg' => 'Logout successfully',
-            'errors' => null,
-            'content' => null,
+            'message' => 'Logout successfully',
+        ];
+        return response()->json($respon, 200);
+    }
+
+    public function coba(Request $request)
+    {
+        $respon = [
+            'message' => 'Login successfully',
+            'user' => [
+                'email' => 'agam@gmail.com',
+                'status_code' => 200,
+            ],
+            'token' => 'asd7as8d7asdsad8',
+            'token_type' => 'Bearer',
+        ];
+        return response()->json($respon, 200);
+    }
+
+    public function user()
+    {
+        $respon = [
+            'user' => auth()->user()
         ];
         return response()->json($respon, 200);
     }
