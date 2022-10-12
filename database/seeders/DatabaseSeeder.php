@@ -19,12 +19,42 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // data tabel role
         Role::create([
             'name' => 'admin'
         ]);
         Role::create([
-            'name' => 'dosen'
+            'name' => 'user'
         ]);
+
+        // data tabel posisi 
+        Position::create([
+            'posisi' => 'dosen' 
+        ]);      
+        Position::create([
+            'posisi' => 'pegawai' 
+        ]);
+
+        // tabel data tipe izin 
+        PermissionType::create([
+            'name' => 'wfh'
+        ]);
+        PermissionType::create([
+            'name' => 'wfo'
+        ]);
+
+        // tabel data jadwal
+        Attendance::create([
+            'title' => 'jam masuk pegawai',
+            'position_id' => '2',
+            'title' => 'masuk dosen a',
+            'start_time' => '00:00',
+            'limit_start_time' => '22:00',
+            'end_time' => '00:00',
+            'limit_end_time' => '22:00'
+        ]);
+
+        // tabel data user
         User::create([
             'name' => 'agam',
             'email' => 'agam@gmail.com',
@@ -32,18 +62,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'), // password
             'remember_token' => Str::random(10),
             'role_id' => 1,
+            'position_id' => 1,
             'phone' => '081081081',
-            // 'position_id' => 1,
             'image' => 'image',
             'address' => 'address',
-        ]);
-
-       
-
-        PermissionType::create([
-            'name' => 'wfh'
-        ]);
-
+        ]);       
         User::create([
             'name' => 'takim',
             'email' => 'takim@gmail.com',
@@ -52,19 +75,9 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'role_id' => 2,
             'phone' => '081081081',
-            // 'position_id' => 1,
+            'position_id' => 2,
             'image' => 'image',
             'address' => 'address',
-        ]);
-
-        Attendance::create([
-            'title' => 'jam masuk dosen a',
-            'user_id' => '2',
-            'title' => 'masuk dosen a',
-            'start_time' => '00:00',
-            'limit_start_time' => '22:00',
-            'end_time' => '00:00',
-            'limit_end_time' => '22:00'
         ]);
     }
 }

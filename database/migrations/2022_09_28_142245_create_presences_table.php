@@ -20,9 +20,9 @@ class CreatePresencesTable extends Migration
             // -> attendece_id =int
             // $table->foreignId('attendece_id');
             $table->date("presence_date");
-            $table->time("presence_enter_time");
-            $table->decimal('latitude', 12,5);
-            $table->decimal('longitude', 12,5);
+            $table->time("presence_enter_time")->nullable();
+            $table->decimal('latitude', 12,5)->nullable();
+            $table->decimal('longitude', 12,5)->nullable();
             $table->time("presence_out_time")->nullable();
             $table->timestamps();
         });

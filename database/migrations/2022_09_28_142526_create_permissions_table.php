@@ -16,6 +16,8 @@ class CreatePermissionsTable extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('desciption');
+            $table->string('tanggal_sart_izin');
+            $table->string('tanggal_end_izin');
             $table->string('file');
             $table->timestamps();
         });

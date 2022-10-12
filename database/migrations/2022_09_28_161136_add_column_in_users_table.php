@@ -17,6 +17,7 @@ class AddColumnInUsersTable extends Migration
             //menamahkan beberapa kolumn setelah kolumn password           
             $table->after('password', function (Blueprint $table) {
                 $table->foreignId('role_id')->constrained();
+                $table->foreignId('position_id')->constrained();
                 $table->string('phone')->nullable();
                 // $table->foreignId('position_id')->constrained();
                 $table->string('name');
@@ -34,8 +35,8 @@ class AddColumnInUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['role_id']);
-            $table->dropColumn(['role_id', 'phone', 'name', 'image', 'address']);
+            $table->dropForeign(['role_id','position_id']);
+            $table->dropColumn(['role_id', 'position_id','phone', 'name', 'image', 'address']);
         });
     }
 }

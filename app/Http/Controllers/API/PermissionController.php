@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,10 +26,19 @@ class PermissionController extends Controller
         ];
         $validatedData = $request->validate($rules);
         $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['tanggal_sart_izin'] = now()->format('y-m-d');
+        $validatedData['tanggal_end_izin'] = Carbon::parse($request->tanggal_end_izin)->format('y-m-d');
         $validatedData['file'] = $request->file('file')->store('post-file');
         Permission::create($validatedData);
-        return response()->json([
-            'status' => 'berhasil' 
-        ]);
+        try { 
+            return response()->json([
+                'status' => 'success',
+                'description' => 'berhasil mengirim data izin'
+            ],200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
