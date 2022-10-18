@@ -1,8 +1,9 @@
 <?php
 
-use App\Models\User;
+use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Presence;
+use App\Models\Position;
 use App\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use App\Http\Controllers\API\CobaController;
 use App\Http\Controllers\API\profileController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\PresencesController;
+use PhpParser\Node\Expr\PostDec;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,86 +59,29 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     // menampilkan presensi sesuai dengan jadwalnya
-    Route::get('/presensi/{attendance}' , [PresencesController::class, 'showPresences']);
+    Route::get('/presensi' , [PresencesController::class, 'showPresences']);
+    // create presensi sesuai attendance
+    Route::post('/presensi/create' ,[PresencesController::class, 'createPresence']);
+   
 
-    // tambah presensi sesuai attendance
-    Route::post('/presensi/{attendance}/create', function (Attendance $attendance){
+    // Route::get('/presensi/form_masuk', function(Attendance $attendance){
+    //     // return Presence::where('attendance_id', $attendance->id)->latest()->get();
+    //     // return Carbon::parse()->format('h:i:s');
+    //     return now()->format('H i s');
 
-        $presensi = Presence::where('attendance_id', $attendance->id)->where('presence_date', now()->format('y-m-d'));
-        // jika presensi dengan tanggal tidak ada, maka create data presensi
-        if($presensi->count() == 0){    
-            Presence::create([
-                'user_id' => auth()->user()->id,
-                'attendance_id' => $attendance->id,
-                'longitude' => null,
-                'latitude' => null,
-                'presence_date' => now()->format('Y-m-d'),
-                'presence_enter_time' => null,
-                'presence_out_time' => null
-            ]);
+    // });
 
-            return response()->json([
-                'status' => 'success',
-                'deskripsi' => 'oke'
-            ],200);
-        }else{
-        return response()->json([
-            'deskripsi' => 'lanjut ke form absen masuk dan keluar'
-        ],200);
-    }});
-
-    Route::get('/presensi/{attendance}/form_masuk', function(Attendance $attendance){
-        return Presence::where('attendance_id', $attendance->id)->latest()->get();
-    });
-    Route::post('/presensi/{attendance}/form_masuk', function(Request $request, Attendance $attendance){
-        $presensi =  Presence::where('attendance_id', $attendance->id)->latest();
-        $cekWaktu = now()->format('h:i:s') >= $attendance->start_time && now()->format('h:i:s') <= $attendance->limit_start_time; 
-         if(!$cekWaktu){
-            return response()->json([
-                'description' => 'maaf anda tidak bisa absen'
-            ],200);
-        }
-        else{
-        $presensi->update([
-            'longitude' => $request->longitude,
-            'latitude' => $request->latitude,
-            'presence_enter_time' => now()->format('h:i:s'),
-        ]);
-        return response()->json([
-            'status' => 'oke',
-            'description' => 'anda berhasil absen'
-        ],200);
-        }
-    });
-    Route::get('/coba2/{attendance}', function(Attendance $attendance){
-        return response()->json([
-            'data' => $attendance->position->posisi
-        ]);
-    });
-    Route::post('/presensi/{attendance}/form_keluar',function(Request $request, Attendance $attendance){
-        $presensi =  Presence::where('attendance_id', $attendance->id)->latest();
-        $cekWaktu = now()->format('h:i:s') >= $attendance->end_time && now()->format('h:i:s') <= $attendance->limit_end_time; 
-        // $cekUser  = $attendance->position->name = 'dosen' ;
-        if(!$cekWaktu){
-            return response()->json([
-                'status' => 'oke',
-                'description' => 'maaf anda sudah tidak bisa absen keluar'
-            ],200);
-        }
-        else{
-        $presensi->update([
-            'longitude' => $request->longitude,
-            'latitude' => $request->latitude,
-            'presence_out_time' => now()->format('h:i:s'),
-        ]);
-        return response()->json([
-            'status' => 'oke',
-            'description' => 'anda berhasil absen'
-        ],200);
-        }
-    });
+    Route::post('/presensi/form_masuk', [PresencesController::class, 'formMasuk']);
+    // Route::get('coba-coba', [PresencesController::class, 'formKeluar']);
+    Route::post('/presensi/form_keluar', [PresencesController::class, 'formKeluar']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
+    Route::get('/coba', function(){
+            $attendance = auth()->user()->position->attendance->first();
+            $presensi =  Presence::where('attendance_id', $attendance->id)->get();
+            foreach ($presensi as $pres) {
+            return $pres->presence_enter_time;
+            }
+    });
 });
 
 

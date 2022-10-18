@@ -47,11 +47,15 @@ class DatabaseSeeder extends Seeder
         Attendance::create([
             'title' => 'jam masuk pegawai',
             'position_id' => '2',
-            'title' => 'masuk dosen a',
-            'start_time' => '00:00',
-            'limit_start_time' => '22:00',
-            'end_time' => '00:00',
-            'limit_end_time' => '22:00'
+            'start_time' => '07:00',
+            'limit_start_time' => '07:10',
+            'end_time' => '16:00',
+            'limit_end_time' => '16:10'
+        ]);
+        
+        Attendance::create([
+            'title' => 'jam masuk selain pegawai',
+            'position_id' => '1',
         ]);
 
         // tabel data user

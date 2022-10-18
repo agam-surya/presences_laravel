@@ -18,7 +18,7 @@ class CreatePermissionsTable extends Migration
             $table->string('desciption');
             $table->string('tanggal_sart_izin');
             $table->string('tanggal_end_izin');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }
