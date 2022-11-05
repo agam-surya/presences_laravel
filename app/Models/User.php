@@ -48,4 +48,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class, 'position_id');
     }
+    public function permission()
+    {
+        return $this->hasMany(Permission::class);
+    }
+    public function presence()
+    {
+        return $this->hasMany(Presence::class);
+    }
 }

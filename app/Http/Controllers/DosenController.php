@@ -106,6 +106,7 @@ class DosenController extends Controller
     public function update(Request $request, User $dosen)
     {
         //
+       
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
@@ -131,10 +132,16 @@ class DosenController extends Controller
         $image = $request->file('image')->store('post-image');
         }
         $validatedData['image'] = $image;
-
-        User::where('id', $dosen->id)
-        ->update($validatedData); 
-        return redirect('/dosen')->with('success', 'data berhasil di update');
+        try {
+            //code...
+            User::where('id', $dosen->id)
+            ->update($validatedData); 
+            return redirect('/dosen')->with('success', 'data berhasil di update');
+        } catch (\Exception $e) {
+            //throw $th;
+            return redirect()->back()->with('error','email harus berbeda dengan email user lain');
+        }
+       
     }
 
     /**
@@ -146,7 +153,14 @@ class DosenController extends Controller
     public function destroy(User $dosen)
     {
         //
+        try {
+            //code...
+            
         User::destroy($dosen->id);
         return redirect('/dosen');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $th->getMessage();
+        }
     }
 }

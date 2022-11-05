@@ -4,11 +4,16 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Position;
 use App\Models\Attendance;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\MyprofileController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DashboardAdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +26,6 @@ use App\Http\Controllers\DosenController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
 Route::get('coba', function (){
     return now()->format('h:i:s');
@@ -46,18 +48,21 @@ Route::middleware('admin')->group(function(){
             "PositionCount" => Position::count()
         ]);
     });
+    Route::get('/myprofile', [MyprofileController::class,'edit']);
+    Route::patch('/myprofile/{user}', [MyprofileController::class,'update']);
     Route::resource('/attendance', AttendanceController::class);
     Route::resource('/pegawai', PegawaiController::class);
     Route::resource('/dosen', DosenController::class);
     Route::get('/jabatan', function(){
-        
         return view('admin.jabatan.index',
         ['positions' => Position::get(),
         "title" => "jabatan",
         "user" => auth()->user(),
         "usercount" => User::get(),
-    ]);
+     ]);
     });
+    Route::get('/permission', [DashboardAdminController::class, 'showPermission']);
+    Route::get('/Presence', [DashboardAdminController::class, 'showPresence']);
 });
 Route::middleware('user')->group(function(){
     Route::get('/user', function(){

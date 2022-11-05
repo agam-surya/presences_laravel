@@ -17,8 +17,18 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role->name != "admin"){
-            return redirect('/user');
+        
+        try {
+            //code...
+            if(auth()->user()->role->name != "admin"){
+                return redirect('/user');
+            }
+            return $next($request);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect('/login')->with('failed', $th->getMessage());
         }
-        return $next($request);}
+    }
+
+       
 }

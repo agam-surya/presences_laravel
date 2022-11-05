@@ -9,11 +9,8 @@
 @endif
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Table attendances</h4>
+                    <h4 class="card-title">Table jadwal absensi</h4>
                     {{-- .btn-outline-{color}  --}}
-                    <div class="col-md-6">
-                        <a href="/attendance/create" class="btn btn-outline-info">tambah data</a>
-                    </div>
                     <div class="table-responsive pt-3">
                       <table class="table table-bordered">
                         <thead>

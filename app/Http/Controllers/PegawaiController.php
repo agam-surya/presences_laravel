@@ -152,8 +152,13 @@ class PegawaiController extends Controller
      */
     public function destroy(User $pegawai)
     {
-        //
+        try {
+            //code...
         User::destroy($pegawai->id);
         return redirect('/pegawai');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error','maaf data tidak bisa dihapus karena ada data lainnya juga');
+        }
     }
 }

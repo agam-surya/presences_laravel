@@ -1,8 +1,6 @@
 @extends('admin.main')
 @section('container')
-<div class="content-wrapper">
-  
-  
+<div class="content-wrapper">  
   <div class="col-12 grid-margin mx-auto mt-3">
     <div class="card pt-2">
       <div class="card-body">
@@ -30,7 +28,7 @@
               <input class="typeahead col-md-6 @error('email') is-invalid @enderror" type="email" placeholder="input Email" name="email" value="{{ old('email',$pegawai->email) }}" autocomplete="off"/>
             </div>
             <div class="col-md-6">
-              <label class="col-form-label"> password </label>
+              <label class="col-form-label"> reset password </label>
               <input class="typeahead col-md-6 " type="text" placeholder="input new Password" name="password" value="{{ old('password') }}" autocomplete="off"/>
             </div>
           </div>

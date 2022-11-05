@@ -2,7 +2,11 @@
 @section('container')
 <div class="content-wrapper">
   
-  
+  @if (session()->has('error'))
+  <div class="alert alert-danger" role="alert">
+    {{ session('error') }}
+  </div>
+  @endif
   <div class="col-12 grid-margin mx-auto mt-3">
     <div class="card pt-2">
       <div class="card-body">
@@ -30,7 +34,7 @@
               <input class="typeahead col-md-6 @error('email') is-invalid @enderror" type="email" placeholder="input Email" name="email" value="{{ old('email',$dosen->email) }}" autocomplete="off"/>
             </div>
             <div class="col-md-6">
-              <label class="col-form-label"> password </label>
+              <label class="col-form-label"> Reset password </label>
               <input class="typeahead col-md-6 " type="text" placeholder="input new Password" name="password" value="{{ old('password') }}" autocomplete="off"/>
             </div>
           </div>

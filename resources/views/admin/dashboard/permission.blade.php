@@ -1,16 +1,9 @@
 @extends('admin.main')
 @section('container')
 <div class="content-wrapper">
-  @if (session()->has('success'))
-  <div class="alert alert-success" role="alert">
-    {{ session('success') }}
-  </div>
-  @endif
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Tabel Jabatan</h4>
-      {{-- .btn-outline-{color} --}}
-      
+      <h4 class="card-title">Table dosen</h4>
       <div class="table-responsive pt-3">
         <table class="table table-bordered">
           <thead>
@@ -19,33 +12,38 @@
                 #
               </th>
               <th>
-                Posisi
+                 Nama
               </th>
-              <th>Jumlah
+              <th>izin
               </th>
-              <th>Aksi
+              <th>keterangan
+              </th>
+              <th>tanggal izin
+              </th>
+              <th>file
               </th>
             </tr>
           </thead>
           <tbody>
-            @foreach ($positions as $posisi)
+            @foreach ($permissions as $permission)
             <tr class="table-info">
               <td>
                 {{ $loop->iteration }}
               </td>
               <td>
-                {{ $posisi->posisi }}
+                {{ $permission->user->name }}
               </td>
               <td>
-                {{  $usercount->where('position_id', $posisi->id)->count() }}
+                {{ $permission->permissionType->name }}
               </td>
               <td>
-                <a class="badge bg-primary border-0  text-decoration-none "
-                  href="/{{ $posisi->posisi }}/create">
-                  tambah</a>
-                <a class="badge bg-success border-0  text-decoration-none "
-                  href="/{{ $posisi->posisi }}">
-                  lihat</a>
+                {{ $permission->desciption }}
+              </td>
+              <td>
+                {{ $permission->tanggal_sart_izin }} sampai {{ $permission->tanggal_end_izin }}
+              </td>
+              <td>
+                <a href="{{ asset('storage/'. $permission->file) }}"><button class="btn-success btn">Download</button></a>
               </td>
             </tr>
             @endforeach

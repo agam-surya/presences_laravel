@@ -2,9 +2,15 @@
 @section('container')
 <div class="content-wrapper">
   @if (session()->has('success'))
-  <div class="alert alert-success" role="alert">
-    {{ session('success') }}
-  </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+               {{session('success')}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+  @elseif((session()->has('error')))
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{session('error')}}
+     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+ </div>
   @endif
   <div class="card">
     <div class="card-body">
@@ -39,6 +45,7 @@
           </thead>
           <tbody>
             @foreach ($pegawais as $pegawai)
+            @if ($pegawai->id != $user->id)
             <tr class="table-info">
               <td>
                 {{ $loop->iteration }}
@@ -74,6 +81,7 @@
                 </form>
               </td>
             </tr>
+            @endif
             @endforeach
           </tbody>
         </table>

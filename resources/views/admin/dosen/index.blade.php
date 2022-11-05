@@ -39,6 +39,7 @@
           </thead>
           <tbody>
             @foreach ($dosens as $dosen)
+            @if($dosen->id != auth()->user()->id)
             <tr class="table-info">
               <td>
                 {{ $loop->iteration }}
@@ -74,6 +75,7 @@
                 </form>
               </td>
             </tr>
+            @endif
             @endforeach
           </tbody>
         </table>

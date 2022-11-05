@@ -17,8 +17,16 @@ class isUser
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role->name !=  'user'){
-            return redirect('/dashboard');
+        
+        try {
+            //code...
+            if(auth()->user()->role->name !=  'user'){
+                return redirect('/dashboard');
+            }
+            return $next($request);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect('/login')->with('failed', $th->getMessage());
         }
-        return $next($request);}
+    }
 }

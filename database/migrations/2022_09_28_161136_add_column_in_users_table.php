@@ -16,8 +16,8 @@ class AddColumnInUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             //menamahkan beberapa kolumn setelah kolumn password           
             $table->after('password', function (Blueprint $table) {
-                $table->foreignId('role_id')->constrained();
-                $table->foreignId('position_id')->constrained();
+                $table->foreignId('role_id');
+                $table->foreignId('position_id');
                 $table->string('phone')->nullable();
                 // $table->foreignId('position_id')->constrained();
                 $table->string('name');
