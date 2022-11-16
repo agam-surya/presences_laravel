@@ -32,13 +32,12 @@ class MyprofileController extends Controller
    
     function update(Request $request, User $user) {
         try {
-            //code...
             if (Role::where('id', $user->role_id) == null){
                 return redirect('/login');
                 }
                 $validatedData = $request->validate([
                     'name' => 'required|max:255',
-                    'email' => 'required',
+                    'email' => 'required|unique:users',
                     'password' => '',
                     'image' => 'image|file|max:1024',
                     'position_id' => 'required',
@@ -58,17 +57,17 @@ class MyprofileController extends Controller
                 if($request->image == null){
                     $image = $user->image;
                 }else{
-                $image = $request->file('image')->store('post-image');
+                   $image = $request->file('image')->store('post-image');
                 }
                 $validatedData['image'] = $image;
-                User::where('id', $user->id)
+                 User::where('id', $user->id)
                 ->update($validatedData); 
-                return redirect('/myprofile');
-            } 
-                catch (\Throwable $th) {
-                    //throw $th;
-                    return $th->getMessage();
-                }
-            }
-    
+                return redirect()->back()->with('success', 'myprofile update successfully');
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error', 'myprofile update invalid:'.$th->getMessage());
+        }
+       
+     }  
 }

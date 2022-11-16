@@ -17,12 +17,12 @@ class AttendanceController extends Controller
     public function index()
     {
         //
-        $attendance = Attendance::get();
         $user = auth()->user();
         return view('admin.attendance.index',[
             "title" => "attendance",
             "user" => $user,
-            "attendance" => Attendance::get(),
+            "attendances" => Attendance::get(),
+            "position" => Position::get()
           
         ]);
         // return $attendace[0]->position->posisi;
@@ -48,38 +48,38 @@ class AttendanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-        $input = [
-            'position_id' => $request->position_id,
-            'title' => $request->title,
-            'start_time' => $request->start_time,
-            'limit_start_time' => $request->limit_start_time,
-            'end_time' => $request->end_time,
-            'limit_end_time' => $request->limti_end_time,     
-        ];
-            // Attendance::create($input);
-            try { 
-                // mencari apakah posisi ada  yang sama
-                $position = Position::get();
-                foreach($position as $p);
-                $attendance = Attendance::where('position_id', $p->id)->get();
-                if(count($attendance) != 1){
-                    // kalau tiddak ada, maka create jadwal untuk posisi ini
-                    Attendance::create($input);
-                    return redirect('/attendance')->with('success','data berhasil di masukkan');
-                }else{
-                    return redirect('/attendance')->with('success','data gagal dimasukkan');
-                }
-                // return redirect('/attendance')->with('success','data berhasil di masukkan');
-            } catch (\Exception $e) {
-                return response()->json([
-                    'error' => $e->getMessage(),
-                ]);
-            }
+    // public function store(Request $request)
+    // {
+    //     //
+    //     $input = [
+    //         'position_id' => $request->position_id,
+    //         'title' => $request->title,
+    //         'start_time' => $request->start_time,
+    //         'limit_start_time' => $request->limit_start_time,
+    //         'end_time' => $request->end_time,
+    //         'limit_end_time' => $request->limti_end_time,     
+    //     ];
+    //         // Attendance::create($input);
+    //         try { 
+    //             // mencari apakah posisi ada  yang sama
+    //             $position = Position::get();
+    //             foreach($position as $p);
+    //             $attendance = Attendance::where('position_id', $p->id)->get();
+    //             if(count($attendance) != 1){
+    //                 // kalau tiddak ada, maka create jadwal untuk posisi ini
+    //                 Attendance::create($input);
+    //                 return redirect('/attendance')->with('success','data berhasil di masukkan');
+    //             }else{
+    //                 return redirect('/attendance')->with('success','data gagal dimasukkan');
+    //             }
+    //             // return redirect('/attendance')->with('success','data berhasil di masukkan');
+    //         } catch (\Exception $e) {
+    //             return response()->json([
+    //                 'error' => $e->getMessage(),
+    //             ]);
+    //         }
 
-    }
+    // }
         function coba (){
             $position = Position::all();
             return $position;
@@ -123,16 +123,21 @@ class AttendanceController extends Controller
     {
         //
         $Data = [
-            'position_id' => $request->position_id,
             'title' => $request->title,
             'start_time' => $request->start_time,
             'limit_start_time' => $request->limit_start_time,
             'end_time' => $request->end_time,
             'limit_end_time' => $request->limit_end_time, 
         ];
+        try {
+            //code...  
         Attendance::where('id', $attendance->id)
         ->update($Data); 
         return redirect('/attendance')->with('success', 'data berhasil di update');
+        } catch (\Exception $e) {
+            //throw $th;
+            return redirect()->back()->with('error', 'data gagal di update: '. $e->getMessage());
+        }
     }
 
     /**

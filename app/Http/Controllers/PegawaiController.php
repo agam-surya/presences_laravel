@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class PegawaiController extends Controller
 {
@@ -18,12 +19,14 @@ class PegawaiController extends Controller
     public function index()
     {
        //
-        $pegawais = User::where('position_id', 2)->get();
+        // $pegawais = User::where('position_id', 2)->get();
+        $pegawais = User::where('position_id', 2)->paginate(3);
         return view('admin.pegawai.index',[
-            "title" => "attendance",
+            "title" => "pegawai",
             "user" => auth()->user(),
             "pegawais" => $pegawais,
-          
+            "position" => Position::get(),
+            "roles" => Role::get()
         ]);
     }
 
@@ -138,10 +141,15 @@ class PegawaiController extends Controller
         $image = $request->file('image')->store('post-image');
         }
         $validatedData['image'] = $image;
-
-        User::where('id', $pegawai->id)
-        ->update($validatedData); 
-        return redirect('/pegawai')->with('success', 'data berhasil di update');
+        try {
+            //code...
+            User::where('id', $pegawai->id)
+            ->update($validatedData); 
+            return redirect('/pegawai')->with('success', 'data berhasil di update');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with('error','email harus berbeda dengan email user lain');
+        }
     }
 
     /**
@@ -154,7 +162,7 @@ class PegawaiController extends Controller
     {
         try {
             //code...
-        User::destroy($pegawai->id);
+        // User::destroy($pegawai->id);
         return redirect('/pegawai');
         } catch (\Throwable $th) {
             //throw $th;

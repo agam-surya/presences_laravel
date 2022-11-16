@@ -15,4 +15,8 @@ class Presence extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function attendance()
+    {
+        return $this->belongsTo(Attendance::class, 'user_id');
+    }
 }

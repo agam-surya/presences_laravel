@@ -1,6 +1,11 @@
 @extends('admin.main')
 @section('container')
-<div class="content-wrapper">  
+<div class="content-wrapper">
+  @if (session()->has('error'))
+  <div class="alert alert-danger" role="alert">
+    {{ session('error') }}
+  </div>
+  @endif  
   <div class="col-12 grid-margin mx-auto mt-3">
     <div class="card pt-2">
       <div class="card-body">

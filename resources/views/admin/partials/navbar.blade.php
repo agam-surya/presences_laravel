@@ -11,7 +11,7 @@
           {{-- <img src="doc/template/images/logo.svg" alt="logo" /> --}}
         </a>
         <a class="navbar-brand brand-logo-mini" href="dashboard">
-          <img class="img-xs rounded-circle" width="40px" src="{{ asset('storage/'.$user->image) }}" alt="logo" />
+          <img class="img-xs rounded-circle" width="40px" src="../{{ asset('storage/'.$user->image) }}" alt="logo" />
           {{-- <div class="fs-100">P</div> --}}
         </a>
       </div>
@@ -33,11 +33,11 @@
               <p class="mb-1 mt-3 font-weight-semibold">{{ auth()->user()->name }}</p>
               <p class="fw-light text-muted mb-0">{{ auth()->user()->email }}</p>
             </div>
-            <a class="dropdown-item " href="/myprofile"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile</a>
+            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#myprofile"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile</button>
             <form action="/logout" method="post">
               @csrf            
-              <button type='submit' class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Logo Out</button>
-            </form>  
+              <button type='submit' class="dropdown-item" ><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Logo Out</button>
+            </form> 
           </div>
         </li>
       </ul>
@@ -46,3 +46,92 @@
       </button>
     </div>
   </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="myprofile" tabindex="-1" aria-labelledby="myprofileLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="myprofileLabel">My Profile</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/myprofile/{{$user->id}}" method="post" enctype="multipart/form-data">
+        @method('patch')
+        @csrf
+      <div class="modal-body">
+        
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">Name</label>
+          <div class="col-sm-8">
+            <input type="text"  class="form-control" id="staticEmail" value="{{ $user->name }}" name='name'>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">Email</label>
+          <div class="col-sm-8">
+            <input type="email"  class="form-control" id="staticEmail" value="{{ $user->email }}" name="email">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">new password</label>
+          <div class="col-sm-8">
+            <input type="text"  class="form-control" id="staticEmail" name="password">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">Phone</label>
+          <div class="col-sm-8">
+            <input type="number"  class="form-control" id="staticEmail" value="{{ $user->phone }}" name="phone">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">Address</label>
+          <div class="col-sm-8">
+            <input type="text"  class="form-control" id="staticEmail" value="{{ $user->address }}" name="address">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label class="col-form-label col-sm-4">Jabatan</label>
+                <select class="col-sm" name="position_id">
+                  @foreach ($position as $posisi)
+                          @if (old('position_id') != $posisi->id)
+                              <option value={{ $posisi->id }} selected>{{ $posisi->posisi }}</option>
+                          @else
+                              <option value={{ $posisi->id }}>{{ $posisi->posisi }}</option>
+                          @endif
+                      @endforeach
+                </select>
+              {{-- </div> --}}
+        </div>
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm-4 col-form-label">Role</label>
+          <div class="col-sm-8">
+            <input type="text"  readonly class="form-control-plaintext" id="staticEmail" value="{{ $user->role->name }}">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="image" class="col-sm-4 col-form-label">Gambar</label>
+          <div class="col-sm-8">
+            <img  class="rounded mb-3" style="background-size: cover; width:100px; height:100px" src="storage/{{ $user->image }}" alt="image" id="imageOutput">
+            <input class="form-control-sm form-control" type="file" id="image" name="image" value="{{ $user->image }}" onchange="loadfile(event)">
+          </div>
+          <script>
+            var loadfile = function(e){
+              var loadfile = document.getElementById('imageOutput')
+              imageOutput.src = URL.createObjectURL(event.target.files[0])
+            }
+          </script>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+
+  

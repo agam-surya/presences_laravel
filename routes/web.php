@@ -3,8 +3,11 @@
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Position;
+use App\Models\Presence;
 use App\Models\Attendance;
+// use Brian2694\Toastr\Toastr;
 use Illuminate\Http\Request;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DosenController;
@@ -30,7 +33,6 @@ use App\Http\Controllers\DashboardAdminController;
 Route::get('coba', function (){
     return now()->format('h:i:s');
 });
-
 // Route::get('/', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login',[LoginController::class, 'authenticate']);
@@ -45,10 +47,11 @@ Route::middleware('admin')->group(function(){
             "title" => "Dashboard",
             "user" => $user,
             "UserCount" => User::count(),
-            "PositionCount" => Position::count()
-        ]);
+            "PositionCount" => Position::count(),
+            "position" => Position::get()
+        ]); 
     });
-    Route::get('/myprofile', [MyprofileController::class,'edit']);
+    // Route::get('/myprofile', [MyprofileController::class,'edit']);
     Route::patch('/myprofile/{user}', [MyprofileController::class,'update']);
     Route::resource('/attendance', AttendanceController::class);
     Route::resource('/pegawai', PegawaiController::class);
@@ -59,6 +62,7 @@ Route::middleware('admin')->group(function(){
         "title" => "jabatan",
         "user" => auth()->user(),
         "usercount" => User::get(),
+        "position" => Position::get()
      ]);
     });
     Route::get('/permission', [DashboardAdminController::class, 'showPermission']);
@@ -70,4 +74,10 @@ Route::middleware('user')->group(function(){
             'title' => 'user'
         ]);
     });
+});
+
+Route::get('/apa', [DashboardAdminController::class, 'laporanKehadiran']);
+Route::get('/apahayo', function () {
+    Toastr::error('Messages in here', 'Title', ["positionClass" => "toast-top-center"]);
+    return view('welcome');
 });

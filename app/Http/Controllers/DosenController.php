@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Hash;
 
 class DosenController extends Controller
 {
@@ -18,12 +20,14 @@ class DosenController extends Controller
     public function index()
     {
        //
-        $dosens = User::where('position_id', 1)->get();
+        $dosens = User::where('position_id', 1)->paginate(5);
         return view('admin.dosen.index',[
             "title" => "attendance",
             "user" => auth()->user(),
             "dosens" => $dosens,
-          
+            "position" => Position::get(),
+            // "posisi" => Position::where('id',1)->get(),
+            "roles" => Role::get(),
         ]);
     }
 
@@ -39,6 +43,7 @@ class DosenController extends Controller
             "title" => "attendance",
             "user" => auth()->user(),
             "roles" => Role::get(),
+            "position" => Position::get()
         ]);
         // return Role::get();
     }
@@ -52,20 +57,27 @@ class DosenController extends Controller
     public function store(Request $request)
     {
         //
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|unique:users',
-            'password'=> 'required|min:8|max:255|',
-            'image' => 'required|image|file|max:1024',
-            'role_id' => 'required',
-            'address' => 'required',
-            'phone' => 'required',
-        ]);
-            $validatedData['password'] = Hash::make($validatedData['password']);
-            $validatedData['image'] = $request->file('image')->store('post-image');
-            $validatedData['position_id'] = 1; 
-        User::create($validatedData);
-        return redirect('/dosen')->with('success', 'Data Dosen berhasil ditambahkan');
+        try {
+            //code...
+            $validatedData = $request->validate([
+                'name' => 'required|max:255',
+                'email' => 'required|unique:users',
+                'password'=> 'required|min:8|max:255|',
+                'image' => 'required|image|file|max:1024',
+                'role_id' => 'required',
+                'address' => 'required',
+                'phone' => 'required',
+            ]);
+                $validatedData['password'] = Hash::make($validatedData['password']);
+                $validatedData['image'] = $request->file('image')->store('post-image');
+                $validatedData['position_id'] = 1; 
+            User::create($validatedData);
+            return redirect('/dosen')->with('success', 'Data Dosen berhasil ditambahkan');
+        } catch (\Throwable $th) {
+            //throw $th;
+            $th->getMessage();
+        }
+        
     }
 
     /**
@@ -93,6 +105,7 @@ class DosenController extends Controller
             "title" => "attendance",
             "user" => auth()->user(),
             "roles" => Role::get(),
+            "position" => Position::get()
         ]);
     }
 
@@ -123,7 +136,6 @@ class DosenController extends Controller
         else{
         $password = Hash::make( $validatedData['password']);
         }
-
         $validatedData['password'] = $password;
 
         if($request->image == null){
@@ -136,10 +148,10 @@ class DosenController extends Controller
             //code...
             User::where('id', $dosen->id)
             ->update($validatedData); 
-            return redirect('/dosen')->with('success', 'data berhasil di update');
+            return redirect()->back()->with('success', 'dosen update successfully');
         } catch (\Exception $e) {
             //throw $th;
-            return redirect()->back()->with('error','email harus berbeda dengan email user lain');
+            return redirect()->back()->with('error', 'dosen update error:'.$e->getMessage());
         }
        
     }
@@ -155,9 +167,10 @@ class DosenController extends Controller
         //
         try {
             //code...
-            
+
         User::destroy($dosen->id);
-        return redirect('/dosen');
+         Toastr::success('Messages in here', 'Sukses', ["positionClass" => "toast-top-right"]);            
+        return redirect()->back();
         } catch (\Throwable $th) {
             //throw $th;
             return $th->getMessage();

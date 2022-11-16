@@ -1,5 +1,6 @@
 @include('admin.partials.head')
 <body>
+  <div id="preloader"></div>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
    @include('admin.partials.navbar')
@@ -19,6 +20,9 @@
   </div>
     @include('admin.partials.script')
   <!-- End custom js for this page-->
+ 
+  {{-- {!! Toastr::message() !!} --}}
+
 </body>
 
 </html>
