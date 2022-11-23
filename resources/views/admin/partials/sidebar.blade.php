@@ -20,6 +20,7 @@
             <li class="nav-item"> <a class="nav-link {{ Request::is('dosen*') ? 'active': ''}}" href="/dosen">Data Dosen</a></li>
             <li class="nav-item"> <a class="nav-link {{ Request::is('pegawai*') ? 'active': ''}}" href="/pegawai">Data Pegawai</a></li>
             <li class="nav-item"> <a class="nav-link {{ Request::is('attendance*') ? 'active': ''}}" href="/attendance">Data Jadwal Absensi</a></li>
+            <li class="nav-item"> <a class="nav-link {{ Request::is('holidays') ? 'active': ''}}" href="/holidays">Data libur</a></li>
             <li class="nav-item"> <a class="nav-link {{ Request::is('jabatan') ? 'active': ''}}" href="/jabatan">Data Jabatan</a></li>
           </ul>
         </div>
@@ -38,6 +39,11 @@
           <span class="menu-title">Data Kehadiran</span>
         </a>
       </li>    
+      <li class="nav-item nav-category">Profile</li>
+      <li class="nav-item">
+        <button class="nav-link dropdown-item" data-bs-toggle="modal" data-bs-target="#myprofile">
+          <i class="menu-icon mdi mdi-account"></i> <span class="menu-title"> My Profile</span></button>
+      </li>
       <li class="nav-item nav-category">logout</li>
       <li class="nav-item">
         <form action="/logout" method="post">

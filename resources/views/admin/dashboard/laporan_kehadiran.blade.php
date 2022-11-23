@@ -1,38 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Kehadiran</title>
-    <style>
-      body{
-        text-align: center;
-        margin: 0 auto;
-      }
-      table{
-        margin: 0 auto;
-        /* border-collapse: unset; */
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 90%;
-      }
-        td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-        }
-
-      tr:nth-child(even) {
-        background-color: #dddddd;
-      }
-    </style>
-</head>
+@include('admin.partials.head')
 
 <body style="text-align: center;">
     <h1>laporan Kehadiran</h1>
-    <table>
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>
@@ -55,13 +25,10 @@
                 <th>keterangan
                 </th>
             </tr>
-        </thead>
-
+        </thead>   
         <tbody>
+           
             @foreach ($presences as $presence)
-            @foreach ($users as $user)
-            @if ($presence->user_id == $user->id)
-            @if ($presence->longitude != null && $presence->latitude != null)
             <?php 
           $long = $presence->longitude > $lokasizone_longitude && $presence->longitude < $lokasizone_maxlongitude;    
           $lat = $presence->latitude > $lokasizone_latitude && $presence->latitude < $lokasizone_maxlatitude;
@@ -108,11 +75,9 @@
                     @endif
                 </td>
             </tr>
-            @endif
-            @endif
-            @endforeach
             @endforeach
         </tbody>
+        
 
     </table>
 

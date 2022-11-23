@@ -21,9 +21,15 @@ class LoginController extends Controller
 
         if(Auth::attempt($credential)){
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            // if (auth()->user()->role_id == 1) {
+            //     # code...
+            //     return redirect()->intended('/dashboard');
+            // } else {
+                # code...
+                return redirect()->intended('/user');
+            // }
         }
-        return back()->with('loginFail', "email atau password salah");
+        return back()->with('error', "email atau password salah");
     }
 
     public function logout(Request $request){

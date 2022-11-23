@@ -1,29 +1,13 @@
 @extends('admin.main')
 @section('container')
 <div class="content-wrapper">
-  @if (session()->has('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-               {{session('success')}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-  @elseif((session()->has('error')))
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    {{session('error')}}
-     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
- </div>
-  @endif
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">Table pegawai</h4>
       {{-- .btn-outline-{color} --}}
-      <div class="col-md-6">
-        <a href="#" data-bs-target="#tambahPegawai" data-bs-toggle="modal" class="btn btn-outline-info">tambah data</a>
-      </div>
-
-
-
+      <a href="#" data-bs-toggle="modal" data-bs-target="#tambahPegawai" class="btn btn-outline-info p-2 border-1">tambah data</a>
       <div class="table-responsive pt-3 mb-3">
-        <table class="table table-bordered">
+        <table id="id_table" class="table table-bordered table-striped mt-2">
           <thead>
             <tr>
               <th>
@@ -49,11 +33,10 @@
           <tbody>
             @foreach ($pegawais as $index => $pegawai)
             @if ($pegawai->id != $user->id)
-            <tr class="table-info">
+            <tr>
               <td>
                 {{ $index + $pegawais->firstItem() }}
               </td>
-
               <td>
                 <img src="{{ asset('storage/' . $pegawai->image) }}" alt="">
               </td>
@@ -72,21 +55,41 @@
               <td>
                 {{ $pegawai->address }}
               </td>
-              <td>
-                <a class="badge bg-warning border-0 text-dark text-decoration-none "
-                  href="#" data-bs-toggle="modal" data-bs-target="#edit-{{ $pegawai->id }}">
-                  Edit</a>
-                <form action="/pegawai/{{ $pegawai->id }}" method="post" class="d-inline-block">
-                  @method('delete')
-                  @csrf
-                  <button class="badge bg-danger border-0" onclick="confirm('are you sure')">
-                    delete </button>
-                </form>
+              <td class="text-center">
+                <a href="#{{ $pegawai->id }}" class="btn btn-warning"
+                  data-bs-target="#edit-{{ $pegawai->id }}" data-bs-toggle="modal">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="#{{ $pegawai->id }}" class="btn btn-danger" data-bs-target="#hapus-{{ $pegawai->id }}" data-bs-toggle="modal">
+                  <i class="bi bi-trash"></i>
+                </a>
               </td>
             </tr>
             @endif
-
-            <!-- Modal EditDosen-->
+            {{-- modal  hapusPegawai --}}
+            <div class="modal fade" id='hapus-{{ $pegawai->id }}' tabindex="-1" aria-labelledby="editDosenLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editDosenLabel">Edit Dosen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                    <div class="modal-body">
+                        anda yakin menghapus dosen {{ $pegawai->name }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                  <form action='/pegawai/{{ $pegawai->id }}' method="post">
+                    @method('delete')
+                    @csrf
+                      <button type="submit" class="btn btn-danger" id="hapus">Hapus</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Modal EditPegawai-->
             <div class="modal fade" id='edit-{{ $pegawai->id }}' tabindex="-1" aria-labelledby="editDosenLabel"
               aria-hidden="true">
               <div class="modal-dialog">
@@ -179,7 +182,8 @@
           </tbody>
         </table>
       </div>
-      {{ $pegawais->links() }}
+
+
     </div>
   </div>
 </div>

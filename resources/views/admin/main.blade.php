@@ -5,7 +5,7 @@
     <!-- partial:partials/_navbar.html -->
    @include('admin.partials.navbar')
     <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
+    <div class="page-body-wrapper">
       <!-- partial:partials/_sidebar.html -->
       @include('admin.partials.sidebar')
       <!-- partial -->
@@ -20,10 +20,11 @@
   </div>
     @include('admin.partials.script')
   <!-- End custom js for this page-->
- 
+  
   {{-- {!! Toastr::message() !!} --}}
-
+  
 </body>
+@stack('js')
 
 </html>
 

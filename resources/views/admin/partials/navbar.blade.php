@@ -11,7 +11,7 @@
           {{-- <img src="doc/template/images/logo.svg" alt="logo" /> --}}
         </a>
         <a class="navbar-brand brand-logo-mini" href="dashboard">
-          <img class="img-xs rounded-circle" width="40px" src="../{{ asset('storage/'.$user->image) }}" alt="logo" />
+          <img class="img-xs rounded-circle" width="40px" src="storage/{{ $user->image }}" alt="logo" />
           {{-- <div class="fs-100">P</div> --}}
         </a>
       </div>
@@ -29,7 +29,7 @@
             <img class="img-xs rounded-circle" width="20px" src="storage/{{ $user->image }}" alt="Profile image"> </a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
             <div class="dropdown-header text-center">
-              <img class="img-xs rounded-circle" width="40px" src="{{ asset('storage/'.$user->image) }}" alt="{{ $user->image }}">
+              <img class="img-xs rounded-circle" width="40px" src="{{ asset('storage/'.auth()->user()->image) }}" alt="{{ auth()->user()->image }}">
               <p class="mb-1 mt-3 font-weight-semibold">{{ auth()->user()->name }}</p>
               <p class="fw-light text-muted mb-0">{{ auth()->user()->email }}</p>
             </div>

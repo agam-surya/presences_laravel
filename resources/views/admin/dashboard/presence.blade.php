@@ -14,13 +14,17 @@
   @endif
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Table kehadiran</h4>
-      <div class="card-tools ">
-        <a href="/apa" target="blank" class="btn-primary btn">cetak pdf</a>
+      <div class="row align-items-center align-items-center">
+        <div class="col-md-10">
+          <h4 class="card-title">Table kehadiran</h4>
+        </div>
+        <div class="col-md-2 ">
+            <a href="#" target="blank" class="btn-primary btn p-1" data-bs-toggle="modal" data-bs-target="#cetakPDF"><i class="bi bi-printer-fill"></i> cetak pdf</a>
+        </div>
       </div>
     
       <div class="table-responsive pt-3">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="id_table">
           <thead>
             <tr>
               <th>
@@ -46,14 +50,11 @@
           </thead>
           <tbody>
               @foreach ($presences as $presence)
-              @foreach ($users as $user)
-              @if ($presence->user_id == $user->id)
-              @if ($presence->longitude != null && $presence->latitude != null)
               <?php 
                 $long = $presence->longitude > $lokasizone_longitude && $presence->longitude < $lokasizone_maxlongitude;    
                 $lat = $presence->latitude > $lokasizone_latitude && $presence->latitude < $lokasizone_maxlatitude;
-              ?>
-              <tr class="table-info">
+              ?> 
+              <tr >
                   <td>
                       {{ $loop->iteration }}
                   </td>
@@ -95,9 +96,6 @@
                       @endif
                   </td>
               </tr>
-              @endif
-              @endif
-              @endforeach
               @endforeach
           </tbody>    
         </table>
@@ -105,4 +103,31 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="cetakPDF" tabindex="-1" aria-labelledby="cetakPDFLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cetakPDFLabel">Cetak Data Pertanggal</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="mb-3">
+            <label for="tanggal_awal" class="form-label">Tanggal Awal</label>
+            <input type="date" class="form-control" id="tanggal_awal" aria-describedby="tanggal_awal" name="tanggal_awal">
+          </div>
+          <div class="mb-3">
+            <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
+            <input type="date" class="form-control" id="tanggal_akhir" aria-describedby="tanggal_akhir" name="tanggal_akhir">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="" type="button" class="btn btn-primary" onclick="this.href='/cetakKehadiran/' + document.getElementById('tanggal_awal').value + '/' + document.getElementById('tanggal_akhir').value">Submit</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection

@@ -1,26 +1,13 @@
 @extends('admin.main')
 @section('container')
 <div class="content-wrapper">
-  @if (session()->has('success'))
-  <div class="alert-dismissible fade show alert alert-success" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @elseif(session()->has('error'))
-  <div class="alert-dismissible fade show alert alert-danger" role="alert">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">Table dosen</h4>
       {{-- .btn-outline-{color} --}}
-      <div class="col-md-6">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#tambahDosen" class="btn btn-outline-info">tambah data</a>
-      </div>
+      <a href="#" data-bs-toggle="modal" data-bs-target="#tambahDosen" class="btn btn-outline-info p-2 border-1">tambah data</a>
       <div class="table-responsive pt-3 mb-3">
-        <table class="table table-bordered">
+        <table id="id_table" class="table table-bordered  table-striped mt-2">
           <thead>
             <tr>
               <th>
@@ -39,21 +26,17 @@
               </th>
               <th>Address
               </th>
-              <th>Aksi
+              <th>aksi
               </th>
             </tr>
           </thead>
           <tbody>
-            @php
-               $no = 1;
-            @endphp
             @foreach ($dosens as $index=>$dosen)
             @if($dosen->id != auth()->user()->id)
-            <tr class="table-info">
+            <tr>
               <td>
-                {{ $index + $dosens->firstItem() }}
+                {{ $loop->iteration }}
               </td>
-
               <td>
                 <img src="{{ asset('storage/' . $dosen->image) }}" alt="">
               </td>
@@ -72,30 +55,49 @@
               <td>
                 {{ $dosen->address }}
               </td>
-              <td>
-                <a href="#{{ $dosen->id }}" class="badge bg-warning border-0 text-dark text-decoration-none see-detail"
+              <td class="text-center">
+                <a href="#{{ $dosen->id }}" class="btn btn-warning"
                   data-bs-target="#edit-{{ $dosen->id }}" data-bs-toggle="modal">
-                  Edit
+                  <i class="bi bi-pencil-square"></i>
                 </a>
-
-
-                <form action="/dosen/{{ $dosen->id }}" method="post" class="d-inline-block">
-                  @method('delete')
-                  @csrf
-                  <button class="badge bg-danger border-0" onclick="confirm('are you sure')">
-                    delete </button>
-                </form>
+                <a href="#{{ $dosen->id }}" class="btn btn-danger" data-bs-target="#hapus-{{ $dosen->id }}" data-bs-toggle="modal">
+                  <i class="bi bi-trash"></i>
+                </a>
               </td>
             </tr>
             @endif
 
+
+            {{-- modal hapusDosen --}}
+            <div class="modal fade" id='hapus-{{ $dosen->id }}' tabindex="-1" aria-labelledby="editDosenLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editDosenLabel">Edit Dosen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                    <div class="modal-body">
+                        anda yakin menghapus dosen {{ $dosen->name }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                  <form action='/dosen/{{ $dosen->id }}' method="post">
+                    @method('delete')
+                    @csrf
+                      <button type="submit" class="btn btn-danger" id="hapus">Hapus</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
             <!-- Modal EditDosen-->
             <div class="modal fade" id='edit-{{ $dosen->id }}' tabindex="-1" aria-labelledby="editDosenLabel"
               aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editDosenLabel">My Profile</h1>
+                    <h1 class="modal-title fs-5" id="editDosenLabel">Edit Dosen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <form action='/dosen/{{ $dosen->id }}' method="post" enctype="multipart/form-data">
@@ -178,15 +180,17 @@
                 </div>
               </div>
             </div>
+
+
             @endforeach
           </tbody>
         </table>
       </div>
-      {{ $dosens->links() }}
     </div>
   </div>
 </div>
 
+{{-- modal tambah dosen --}}
 <div class="modal fade" id='tambahDosen' tabindex="-1" aria-labelledby="editDosenLabel"
   aria-hidden="true">
   <div class="modal-dialog">
@@ -263,6 +267,7 @@
                 var loadimageDosen = document.getElementById('imageCreateDosen')
                 loadimageDosen.src = URL.createObjectURL(event.target.files[0])
               }
+
             </script>
           </div>
         </div>
@@ -275,3 +280,7 @@
   </div>
 </div>
 @endsection
+
+
+
+

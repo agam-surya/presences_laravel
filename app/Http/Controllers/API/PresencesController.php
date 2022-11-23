@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use Carbon\Carbon;
+use App\Models\Holiday;
 use App\Models\Position;
 use App\Models\Presence;
 use App\Models\Attendance;
@@ -64,10 +65,13 @@ class PresencesController extends Controller
     }
 
     function createPresence(){
+          $holidays = Holiday::where('date_holidays', now()->format('y-m-d'));
+          $ceckHolidays = $holidays == null && now()->format('l') != 'Sunday';
             $attendance_id = auth()->user()->position->attendance->first()->id;
             $presensi = Presence::where('attendance_id', $attendance_id)->where('presence_date', now()->format('y-m-d'));
             // jika presensi dengan tanggal tidak ada, maka create data presensi
-            if($presensi->count() == 0){    
+            
+            if($presensi->count() == 0 && $ceckHolidays){    
                 Presence::create([
                     'user_id' => auth()->user()->id,
                     'attendance_id' => $attendance_id,

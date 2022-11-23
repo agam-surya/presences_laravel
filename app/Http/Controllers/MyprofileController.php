@@ -37,13 +37,15 @@ class MyprofileController extends Controller
                 }
                 $validatedData = $request->validate([
                     'name' => 'required|max:255',
-                    'email' => 'required|unique:users',
+                    'email' => 'required',
                     'password' => '',
                     'image' => 'image|file|max:1024',
                     'position_id' => 'required',
                     'address' => 'required',
                     'phone' => 'required',
                 ]);
+
+
 
                 if($validatedData['password'] == null){
                     $password = $user->password;

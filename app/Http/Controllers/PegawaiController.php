@@ -16,11 +16,15 @@ class PegawaiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-       //
-        // $pegawais = User::where('position_id', 2)->get();
-        $pegawais = User::where('position_id', 2)->paginate(3);
+        //
+        if ($request->has('searchPegawai')) {
+            # code...
+            $pegawais = User::where('name', 'like','%' .$request->search.'%')->where('position_id', 2)->paginate(5);
+           }else{
+            $pegawais = User::where('position_id', 2)->paginate(5);
+           }
         return view('admin.pegawai.index',[
             "title" => "pegawai",
             "user" => auth()->user(),
@@ -42,6 +46,8 @@ class PegawaiController extends Controller
             "title" => "attendance",
             "user" => auth()->user(),
             "roles" => Role::get(),
+            "position" => Position::get(),
+
         ]);
         // return Role::get();
     }
@@ -86,7 +92,7 @@ class PegawaiController extends Controller
         //     "user" => auth()->user(),
         //     "roles" => Role::get(),
         // ]);
-        return 'edit';
+        return $user;
     }
 
     /**
@@ -162,8 +168,9 @@ class PegawaiController extends Controller
     {
         try {
             //code...
-        // User::destroy($pegawai->id);
-        return redirect('/pegawai');
+        User::destroy($pegawai->id);            
+        return redirect()->back()->with('success','data berhasil dihapus');
+
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->back()->with('error','maaf data tidak bisa dihapus karena ada data lainnya juga');

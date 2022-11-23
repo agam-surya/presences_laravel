@@ -1,17 +1,6 @@
 @extends('admin.main')
 @section('container')
     <div class="content-wrapper">
-        @if (session()->has('success'))
-  <div class="alert-dismissible fade show alert alert-success" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @elseif(session()->has('error'))
-  <div class="alert-dismissible fade show alert alert-danger" role="alert">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
         <div class="row">
             <div class="col-md-6  grid-margin stretch-card">
                 <div class="card bg-primary card-rounded">

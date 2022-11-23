@@ -19,7 +19,7 @@ class isAdmin
     {
         
         try {
-            //code...
+            // code...
             if(auth()->user()->role->name != "admin"){
                 return redirect('/user');
             }

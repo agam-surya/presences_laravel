@@ -2,23 +2,12 @@
 @section('container')
 
     <div class="content-wrapper">
-      @if (session()->has('success'))
-  <div class="alert-dismissible fade show alert alert-success" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @elseif(session()->has('error'))
-  <div class="alert-dismissible fade show alert alert-danger" role="alert">
-    {{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Table at absensi</h4>
+                    <h4 class="card-title">Table absensi</h4>
                     {{-- .btn-outline-{color}  --}}
                     <div class="table-responsive pt-3">
-                      <table class="table table-bordered">
+                      <table class="table table-bordered table-striped">
                         <thead>
                           <tr>
                             <th>
@@ -39,7 +28,7 @@
                         </thead>
                         <tbody>
                             @foreach ($attendances as $attendance)
-                            <tr class="table-info">
+                            <tr>
                               <td>
                                 {{ $loop->iteration }}
                               </td>
@@ -64,8 +53,8 @@
                                 @endif   
                               </td>
                               <td>
-                                <a class="badge bg-warning border-0 text-dark text-decoration-none " href="#{{ $attendance->id }}"  data-bs-toggle="modal" data-bs-target="#edit-{{ $attendance->id }}">
-                                  Edit</a>
+                                <a class="btn btn-warning border-0 text-dark text-decoration-none" href="#{{ $attendance->id }}"  data-bs-toggle="modal" data-bs-target="#edit-{{ $attendance->id }}">
+                                  <i class="bi bi-pencil-square"></i></a>
                               </td>
                             </tr>
                             <!-- Modal EditDosen-->

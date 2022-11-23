@@ -2,7 +2,7 @@
 
 <body>
   <div class="container-scroller">
-    <div class="container-fluid bg-danger page-body-wrapper full-page-wrapper">
+    <div class=" page-body-wrapper full-page-wrapper">
       <div class="content-wrapper d-flex align-items-center auth px-1">
           <div class="col-lg-4 mx-auto">
               <form class="pt-3" action="/logout" method="POST">

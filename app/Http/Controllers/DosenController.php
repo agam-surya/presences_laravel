@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
+use DataTables;
+// use 
 
 class DosenController extends Controller
 {
@@ -17,18 +19,32 @@ class DosenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
        //
-        $dosens = User::where('position_id', 1)->paginate(5);
-        return view('admin.dosen.index',[
-            "title" => "attendance",
-            "user" => auth()->user(),
-            "dosens" => $dosens,
-            "position" => Position::get(),
-            // "posisi" => Position::where('id',1)->get(),
-            "roles" => Role::get(),
-        ]);
+      
+        # code...
+        // $dosens = User::where('name', 'like','%' .$request->search.'%')->where('position_id', 1)->paginate(5);
+        $data = User::where('position_id',1)->get();
+        if(request()->ajax()){
+            return datatables()->of($data)
+                    // ->addColumns('aksi', function ($dosen){
+                    //     $buttons = "<button class='edit btn btn-warning' >Edit</button>";
+                    //     $buttons .= "<button class='hapus btn btn-danger' >Hapus</button>";
+                    //     return $buttons;
+                    // })
+                    // ->rawColumns(['aksi'])
+                    ->make(true);
+        }
+       return view('admin.dosen.index',[
+        "title" => "attendance",
+        "user" => auth()->user(),
+        "dosens" => $data,
+        "position" => Position::get(),
+        // "posisi" => Position::where('id',1)->get(),
+        "roles" => Role::get(),
+    ]);
+        
     }
 
     /**
@@ -73,9 +89,9 @@ class DosenController extends Controller
                 $validatedData['position_id'] = 1; 
             User::create($validatedData);
             return redirect('/dosen')->with('success', 'Data Dosen berhasil ditambahkan');
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             //throw $th;
-            $th->getMessage();
+            return redirect('/dosen')->with('error', 'Data Dosen gagal ditambahkan : ' . $th->getMessage());
         }
         
     }
@@ -86,10 +102,10 @@ class DosenController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
-    {
-        return 'edit';
-    }
+    // public function show(User $user)
+    // {
+    //     return 'edit';
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -100,13 +116,6 @@ class DosenController extends Controller
     public function edit(User $dosen)
     {
         //
-        return view('admin.dosen.edit',[
-            "dosen" => $dosen,
-            "title" => "attendance",
-            "user" => auth()->user(),
-            "roles" => Role::get(),
-            "position" => Position::get()
-        ]);
     }
 
     /**
@@ -119,7 +128,6 @@ class DosenController extends Controller
     public function update(Request $request, User $dosen)
     {
         //
-       
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required',
@@ -166,13 +174,9 @@ class DosenController extends Controller
     {
         //
         try {
-            //code...
-
         User::destroy($dosen->id);
-         Toastr::success('Messages in here', 'Sukses', ["positionClass" => "toast-top-right"]);            
-        return redirect()->back();
+        return redirect()->back()->with('success', 'data dosen berhasi dihapus');
         } catch (\Throwable $th) {
-            //throw $th;
             return $th->getMessage();
         }
     }

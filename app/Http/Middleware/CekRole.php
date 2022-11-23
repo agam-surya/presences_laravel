@@ -3,10 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Role;
 use Illuminate\Http\Request;
 
-class isUser
+class CekRole
 {
     /**
      * Handle an incoming request.
@@ -15,18 +14,11 @@ class isUser
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        
-        try {
-            //code...
-            if(auth()->user()->role->name !=  'user'){
-                return redirect('/dashboard');
-            }
+        if(in_array($request->user()->role_id,$roles)){
             return $next($request);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login')->with('error', $th->getMessage());
-        }
+        };
+        return redirect('/login');
     }
 }
