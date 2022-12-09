@@ -3,7 +3,7 @@
 <div class="content-wrapper">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Table pegawai</h4>
+      <h4 class="card-title fw-bold fs-4">Table pegawai</h4>
       {{-- .btn-outline-{color} --}}
       <a href="#" data-bs-toggle="modal" data-bs-target="#tambahPegawai" class="btn btn-outline-info p-2 border-1">tambah data</a>
       <div class="table-responsive pt-3 mb-3">
@@ -31,11 +31,11 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($pegawais as $index => $pegawai)
+            @foreach ($pegawais as  $pegawai)
             @if ($pegawai->id != $user->id)
             <tr>
               <td>
-                {{ $index + $pegawais->firstItem() }}
+                {{ $loop->iteration }}
               </td>
               <td>
                 <img src="{{ asset('storage/' . $pegawai->image) }}" alt="">
@@ -249,7 +249,7 @@
             <label for="staticEmail" class="col-sm-4 col-form-label">Position</label>
             <div class="col-sm-8">
               <input type="text" readonly class="form-control-plaintext" id="staticEmail"
-                value="{{ $pegawai->position->posisi }}">
+                value="Pegawai">
             </div>
           </div>
           <div class="mb-3 row">
@@ -258,7 +258,7 @@
               <img class="rounded mb-3" style="background-size: cover; width:100px; height:100px"
                 src="" alt="image" id="imageCreateDosen">
               <input class="form-control-sm form-control" type="file" id="image" name="image"
-                value="{{ $pegawai->image }}" onchange="loadimageDosen(event)">
+                value="image" onchange="loadimageDosen(event)">
             </div>
             <script>
               var loadimageDosen = function (e) {

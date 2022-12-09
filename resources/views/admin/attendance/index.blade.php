@@ -4,10 +4,10 @@
     <div class="content-wrapper">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Table absensi</h4>
+                    <h4 class="card-title fw-bold fs-4">Tabel Jadwal Absensi</h4>
                     {{-- .btn-outline-{color}  --}}
                     <div class="table-responsive pt-3">
-                      <table class="table table-bordered table-striped">
+                      <table class="table table-bordered table-striped" id="id_table">
                         <thead>
                           <tr>
                             <th>
@@ -63,7 +63,7 @@
                               <div class="modal-dialog">
                                 <div class="modal-content">
                                   <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="editatAbsen">edit at</h1>
+                                    <h1 class="modal-title fs-5" id="editatAbsen">edit {{ $attendance->title }}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                   </div>
                                   <form action='/attendance/{{ $attendance->id }}' method="post" >
@@ -75,8 +75,8 @@
                                         <div class="col-sm-8">
                                           <input type="text" class="form-control" id="title" value="{{ $attendance->title}}" name='title'>
                                         </div>
-                                      <input type="hidden"  id="start" value="{{ $attendance->position->id }}"
-                                      name="position_id">
+                                      </div>
+                                      <input type="hidden"  id="start" value="{{ $attendance->position->id }}" name="position_id">
                                       <div class="mb-3 row">
                                         <label for="start" class="col-sm-4 col-form-label">Start time</label>
                                         <div class="col-sm-8">

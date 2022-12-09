@@ -3,7 +3,8 @@
 <div class="content-wrapper">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Table dosen</h4>
+      
+      <h4 class="card-title fw-bold fs-4">Table dosen</h4>
       {{-- .btn-outline-{color} --}}
       <a href="#" data-bs-toggle="modal" data-bs-target="#tambahDosen" class="btn btn-outline-info p-2 border-1">tambah data</a>
       <div class="table-responsive pt-3 mb-3">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Position;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Hash;
-use DataTables;
+use Illuminate\Support\Facades\Storage;
 // use 
 
 class DosenController extends Controller
@@ -150,6 +151,8 @@ class DosenController extends Controller
             $image = $dosen->image;
         }else{
         $image = $request->file('image')->store('post-image');
+        $old = \str_replace('', '', $dosen->image);
+        Storage::delete($old);
         }
         $validatedData['image'] = $image;
         try {
@@ -175,6 +178,8 @@ class DosenController extends Controller
         //
         try {
         User::destroy($dosen->id);
+        $old = \str_replace('', '', $dosen->image);
+        Storage::delete($old);
         return redirect()->back()->with('success', 'data dosen berhasi dihapus');
         } catch (\Throwable $th) {
             return $th->getMessage();

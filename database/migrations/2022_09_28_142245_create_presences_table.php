@@ -15,10 +15,6 @@ class CreatePresencesTable extends Migration
     {
         Schema::create('presences', function (Blueprint $table) {
             $table->id();
-            // -> user_id =int
-            // $table->foreignId('user_id');
-            // -> attendece_id =int
-            // $table->foreignId('attendece_id');
             $table->date("presence_date");
             $table->time("presence_enter_time")->nullable();
             $table->decimal('latitude', 12,5)->nullable();

@@ -8,6 +8,7 @@ use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class MyprofileController extends Controller
 {
@@ -55,7 +56,15 @@ class MyprofileController extends Controller
                 }
 
                 $validatedData['password'] = $password;
+                if ($request->file('image')) {
 
+                    $validatedData['image'] = ($request->file('image')->store('post-image'));
+        
+                    if (auth()->user()->image != '' && auth()->user()->image != 'image') {
+                        $old = \str_replace('', '', auth()->user()->image);
+                        Storage::delete($old);
+                    }
+                }
                 if($request->image == null){
                     $image = $user->image;
                 }else{

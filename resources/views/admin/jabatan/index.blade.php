@@ -3,11 +3,9 @@
 <div class="content-wrapper">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Tabel Jabatan</h4>
-      {{-- .btn-outline-{color} --}}
-      
+      <h4 class="card-title fw-bold fs-4">Tabel Jabatan</h4>
       <div class="table-responsive pt-3">
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped" id="id_table">
           <thead>
             <tr>
               <th>
@@ -23,7 +21,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($positions as $posisi)
+            @foreach ($position as $posisi)
             <tr>
               <td>
                 {{ $loop->iteration }}

@@ -3,9 +3,9 @@
 <div class="content-wrapper">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Table dosen</h4>
+      <h4 class="card-title fw-bold fs-4">Tabel Izin Users</h4>
       <div class="table-responsive pt-3">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="id_table">
           <thead>
             <tr>
               <th>
@@ -26,7 +26,7 @@
           </thead>
           <tbody>
             @foreach ($permissions as $permission)
-            <tr class="table-info">
+            <tr>
               <td>
                 {{ $loop->iteration }}
               </td>

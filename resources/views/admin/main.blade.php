@@ -19,6 +19,7 @@
     <!-- page-body-wrapper ends -->
   </div>
     @include('admin.partials.script')
+    @yield('script')
   <!-- End custom js for this page-->
   
   {{-- {!! Toastr::message() !!} --}}

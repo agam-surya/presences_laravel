@@ -25,18 +25,20 @@
           </ul>
         </div>
       </li>
-      <li class="nav-item nav-category">Permission</li>
-      <li class="nav-item {{ Request::is('permission') ? 'active': ''}}">
-        <a class="nav-link" href="/permission">
-          <i class="mdi mdi-bookmark  menu-icon"></i>
-          <span class="menu-title">Data Izin</span>
-        </a>
-      </li>
-      <li class="nav-item nav-category">Presence</li>
+      
+      <li class="nav-item nav-category">Halaman</li>
       <li class="nav-item {{ Request::is('Presence') ? 'active': ''}}">
         <a class="nav-link" href="/Presence">
           <i class=" mdi mdi-clock   menu-icon"></i>
-          <span class="menu-title">Data Kehadiran</span>
+          <span class="menu-title">Laporan Kehadiran</span>
+        </a>
+      </li>  
+      <li class="nav-item {{ Request::is('permission') ? 'active': ''}}"> <a class="nav-link" href="/permission"><i class="bi bi-file-earmark-text menu-icon"></i><span class="menu-title">Data Izin User</span></a></li>
+
+      <li class="nav-item {{ Request::is('lokasi') ? 'active': ''}}">
+        <a class="nav-link" href="/lokasi">
+          <i class="bi bi-geo menu-icon"></i>
+          <span class="menu-title">Lokasi Absensi</span>
         </a>
       </li>    
       <li class="nav-item nav-category">Profile</li>
@@ -44,7 +46,6 @@
         <button class="nav-link dropdown-item" data-bs-toggle="modal" data-bs-target="#myprofile">
           <i class="menu-icon mdi mdi-account"></i> <span class="menu-title"> My Profile</span></button>
       </li>
-      <li class="nav-item nav-category">logout</li>
       <li class="nav-item">
         <form action="/logout" method="post">
           @csrf            

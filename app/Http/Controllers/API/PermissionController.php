@@ -29,7 +29,10 @@ class PermissionController extends Controller
         $validatedData['tanggal_sart_izin'] = now()->format('y-m-d');
         $validatedData['tanggal_end_izin'] = Carbon::parse($request->tanggal_end_izin)->format('y-m-d');
         if($request->file('file')){
-            $validatedData['file'] = $request->file('file')->store('post-file');
+            $fileName = $request->file('file')->getClientOriginalName();
+            $path = $request->file('file')->storeAs('post-file', $fileName, 'public');
+            $validatedData["file"] = '/'.$path;
+            // $validatedData['file'] = $request->file('file')->store('post-file');
         }
         Permission::create($validatedData);
         try { 

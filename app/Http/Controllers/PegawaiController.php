@@ -8,6 +8,7 @@ use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class PegawaiController extends Controller
 {
@@ -19,12 +20,8 @@ class PegawaiController extends Controller
     public function index(Request $request)
     {
         //
-        if ($request->has('searchPegawai')) {
-            # code...
-            $pegawais = User::where('name', 'like','%' .$request->search.'%')->where('position_id', 2)->paginate(5);
-           }else{
-            $pegawais = User::where('position_id', 2)->paginate(5);
-           }
+        $pegawais = User::where('position_id', 2)->get() ;
+        // $pegawais = User::get() ;
         return view('admin.pegawai.index',[
             "title" => "pegawai",
             "user" => auth()->user(),
@@ -42,13 +39,13 @@ class PegawaiController extends Controller
     public function create()
     {
         //
-        return view('admin.pegawai.create',[
-            "title" => "attendance",
-            "user" => auth()->user(),
-            "roles" => Role::get(),
-            "position" => Position::get(),
+        // return view('admin.pegawai.create',[
+        //     "title" => "attendance",
+        //     "user" => auth()->user(),
+        //     "roles" => Role::get(),
+        //     "position" => Position::get(),
 
-        ]);
+        // ]);
         // return Role::get();
     }
 
@@ -104,12 +101,12 @@ class PegawaiController extends Controller
     public function edit(User $pegawai)
     {
         //
-        return view('admin.pegawai.edit',[
-            "pegawai" => $pegawai,
-            "title" => "attendance",
-            "user" => auth()->user(),
-            "roles" => Role::get(),
-        ]);
+        // return view('admin.pegawai.edit',[
+        //     "pegawai" => $pegawai,
+        //     "title" => "attendance",
+        //     "user" => auth()->user(),
+        //     "roles" => Role::get(),
+        // ]);
     }
 
     /**
@@ -145,7 +142,16 @@ class PegawaiController extends Controller
             $image = $pegawai->image;
         }else{
         $image = $request->file('image')->store('post-image');
+        $old = \str_replace('', '', auth()->user()->image);
+        Storage::delete($old);
         }
+        // if ($request->file('image')) {
+
+        //     $validatedData['image'] = ($request->file('image')->store('post-image'));
+
+        //     if (auth()->user()->image != '' && auth()->user()->image != 'image') {
+        //     }
+        // }
         $validatedData['image'] = $image;
         try {
             //code...

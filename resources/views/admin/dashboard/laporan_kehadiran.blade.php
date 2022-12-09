@@ -30,8 +30,7 @@
            
             @foreach ($presences as $presence)
             <?php 
-          $long = $presence->longitude > $lokasizone_longitude && $presence->longitude < $lokasizone_maxlongitude;    
-          $lat = $presence->latitude > $lokasizone_latitude && $presence->latitude < $lokasizone_maxlatitude;
+          $radius = $presence->radius < $rad;
         ?>
             <tr>
                 <td>
@@ -68,7 +67,7 @@
                     @endif
                 </td>
                 <td>
-                    @if (!$lat || !$long)
+                    @if (!$radius)
                     login di luar kampus
                     @else
                     login di dalam kampus

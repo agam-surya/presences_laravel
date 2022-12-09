@@ -16,8 +16,12 @@ class AddColumnInPermissionsTable extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             //
             $table->after('id', function (Blueprint $table){
-                $table->foreignId('permission_type_id')->constrained();
-                $table->foreignId('user_id')->constrained();
+                $table->foreignId('permission_type_id')->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+                $table->foreignId('user_id')->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             });
         });
     }

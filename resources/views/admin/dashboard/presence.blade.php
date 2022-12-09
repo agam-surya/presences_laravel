@@ -16,7 +16,8 @@
     <div class="card-body">
       <div class="row align-items-center align-items-center">
         <div class="col-md-10">
-          <h4 class="card-title">Table kehadiran</h4>
+          
+          <h4 class="card-title fw-bold fs-4">Tabel kehadiran</h4>
         </div>
         <div class="col-md-2 ">
             <a href="#" target="blank" class="btn-primary btn p-1" data-bs-toggle="modal" data-bs-target="#cetakPDF"><i class="bi bi-printer-fill"></i> cetak pdf</a>
@@ -51,8 +52,7 @@
           <tbody>
               @foreach ($presences as $presence)
               <?php 
-                $long = $presence->longitude > $lokasizone_longitude && $presence->longitude < $lokasizone_maxlongitude;    
-                $lat = $presence->latitude > $lokasizone_latitude && $presence->latitude < $lokasizone_maxlatitude;
+                $radius = $presence->radius < $rad;
               ?> 
               <tr >
                   <td>
@@ -89,10 +89,10 @@
                       @endif
                   </td>
                   <td>
-                      @if (!$lat || !$long)
-                      login di luar kampus
+                      @if (!$radius)
+                      {{ $presence->radius }}
                       @else
-                      login di dalam kampus
+                      Absen di dalam kampus
                       @endif
                   </td>
               </tr>

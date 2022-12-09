@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class profileController extends Controller
 {
@@ -13,8 +14,8 @@ class profileController extends Controller
         // $respon = $this->responseApi(200, '', 'tes', $user);
         return response()->json([
             // $user,
-            'nama' => auth()->user()->name,
-            'posisi' => auth()->user()->position->posisi,
+            'name' => auth()->user()->name,
+            'position' => auth()->user()->position->posisi,
             'address' => auth()->user()->address,
             'phone' => auth()->user()->phone,
             'image' => auth()->user()->image
@@ -23,20 +24,27 @@ class profileController extends Controller
 
     function update(Request $request)
     {
+        $user = User::where('id',auth()->user()->id);
         // aturan request name,password dan address 
         $rules = [
-        'name'=> 'required',
-        'password' => 'required',
-        'address' => 'required',
+        // 'name'=> 'required',
+        // 'password' => 'required',
+        // 'address' => 'required',
         ];       
         $validatedData = $request->validate($rules);
         // jika ada request image maka taruh ke folder storage/post-image
-        if($request->file('image')){
-            $validatedData['image'] = $request->file('image')->store('post-image');
+        if ($request->file('image')) {
+
+            $validatedData['image'] = ($request->file('image')->store('post-image'));
+
+            if (auth()->user()->image != '' && auth()->user()->image != 'image') {
+                $old = \str_replace('', '', auth()->user()->image);
+                Storage::delete($old);
+            }
         }
-            $validatedData['password'] = bcrypt($validatedData['password']);
-        User::where('id', auth()->user()->id)
-        ->update($validatedData);   
+        // User::where('id', auth()->user()->id)
+        $user->update($validatedData);
+
         return response()->json([
             'deskripsi' => 'sukses megupdate data',
             'data' => $validatedData
