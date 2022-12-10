@@ -36,33 +36,33 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/user', [AuthController::class, 'user']);
-    
+
     // profile routes
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile', [ProfileController::class, 'update']);
-       
+
     // permission routes
     Route::get('/permission', [PermissionController::class, 'show']);
     Route::post('/permission', [PermissionController::class, 'create']);
 
     // menampilkan jadwal masuk susai dengan posisinya nya
-    Route::get('/attendance', function(){
+    Route::get('/attendance', function () {
         $userPosition = auth()->user()->position->id;
         $jadwals = Attendance::where('position_id', $userPosition)->get();
         // foreaach($jadwals  );
-        
-        foreach ($jadwals as $jadwal) {        
-        return response()->json([
-            'jadwal' => $jadwal
-        ]);
-    }
+
+        foreach ($jadwals as $jadwal) {
+            return response()->json([
+                'jadwal' => $jadwal
+            ]);
+        }
     });
 
     // menampilkan presensi sesuai dengan jadwalnya
-    Route::get('/presensi' , [PresencesController::class, 'showPresences']);
+    Route::post('/presensi', [PresencesController::class, 'showPresences']);
     // create presensi sesuai attendance
-    Route::post('/presensi/create' ,[PresencesController::class, 'createPresence']);
-   
+    Route::post('/presensi/create', [PresencesController::class, 'createPresence']);
+
 
     // Route::get('/presensi/form_masuk', function(Attendance $attendance){
     //     // return Presence::where('attendance_id', $attendance->id)->latest()->get();
@@ -75,12 +75,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Route::get('coba-coba', [PresencesController::class, 'formKeluar']);
     Route::post('/presensi/form_keluar', [PresencesController::class, 'formKeluar']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/coba', function(){
-            $attendance = auth()->user()->position->attendance->first();
-            $presensi =  Presence::where('attendance_id', $attendance->id)->get();
-            foreach ($presensi as $pres) {
+    Route::get('/coba', function () {
+        $attendance = auth()->user()->position->attendance->first();
+        $presensi =  Presence::where('attendance_id', $attendance->id)->get();
+        foreach ($presensi as $pres) {
             return $pres->presence_enter_time;
-            }
+        }
     });
 });
 
