@@ -191,7 +191,9 @@ class PresencesController extends Controller
             $cekWaktu = $cekWaktu1 && $cekWaktu2;
             // jika cekwaktu bernilai true
             if (!$cekWaktu2 && !$cekWaktu2) {
-                return $waktu1 . " gagal ditambahkan " . $enter;
+                return response()->json([
+                    'message' => 'anda tidak bisa absen sekarang, coba lagi nanti',
+                ], 200);
             } else {
                 $keterangan = "anda di zona yang kurang nyaman";
                 if ($dataDistance < $radius) {
