@@ -32,7 +32,7 @@ use PhpParser\Node\Expr\PostDec;
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // harusnya bukan di api
-Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/user', [AuthController::class, 'user']);
@@ -76,11 +76,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/presensi/form_keluar', [PresencesController::class, 'formKeluar']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/coba', function () {
-        $attendance = auth()->user()->position->attendance->first();
-        $presensi =  Presence::where('attendance_id', $attendance->id)->get();
-        foreach ($presensi as $pres) {
-            return $pres->presence_enter_time;
-        }
+        // $user = $request->user();
+        return auth()->user()->tokenZ();
     });
 });
 

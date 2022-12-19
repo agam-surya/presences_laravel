@@ -93,6 +93,7 @@ class AuthController extends Controller
 
             ];
             $this->responseApi(200, auth()->user(), 'Login successfully', '', $tokenResult);
+            // if()
             return response()->json($respon, 200);
         }
     }

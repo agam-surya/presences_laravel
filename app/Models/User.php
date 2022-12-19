@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Presence::class);
     }
+
+    public function tokenZ()
+    {
+        return $this->hasMany(PersonalAccessToken::class);
+    }
 }

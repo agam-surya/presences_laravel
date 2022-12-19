@@ -43,6 +43,9 @@ Route::post('/logout',[LoginController::class, 'logout']);
 Route::get('/', function(){
     return redirect('/login');
 });
+Route::get('/coba', function () {
+    return now();
+});
 
 
 
