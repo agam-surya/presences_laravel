@@ -8,11 +8,13 @@ use App\Models\Presence;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardAdminController extends Controller
 {
     //
     function showDashboard(){
+       
         $user = auth()->user();
         return view('admin.dashboard.index',[
             "title" => "Dashboard",

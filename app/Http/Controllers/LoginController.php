@@ -14,10 +14,12 @@ class LoginController extends Controller
     }
 
     public function authenticate(Request $request){
-        $credential =$request->validate([
+
+        $credential = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
 
         if(Auth::attempt($credential)){
             $request->session()->regenerate();

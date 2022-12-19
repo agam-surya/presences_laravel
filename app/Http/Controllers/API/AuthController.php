@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PersonalAccessToken;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -77,13 +79,22 @@ class AuthController extends Controller
 
 
             // cek jika token user tidak kosong => supaya mencegah bisa lebih dari 1 kali login pada waktu bersamaan, harus logout dulu sebelum login diperangkat lain
+            $tokenable = PersonalAccessToken::where('tokenable_id', auth()->user()->id)->get();
 
-            $user = User::where('email', $request->email)->first();
-
-            if (!count($user->tokens()->get()) == 0) {
-                $respon = $this->responseApi(403, $user->name, 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
-                return response()->json($respon, 403);
+            if(Carbon::parse($tokenable[0]->tokenable_id)->addDay()->format('y-m-d') < now()->format('y-m-d')){
+                return 'coba lagi';
             }
+
+            // $user = User::where('email', $request->email)->first();
+
+            // if (!count($user->tokens()->get()) == 0) {
+            //     $respon = $this->responseApi(403, $user->name, 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
+            //     return response()->json($respon, 403);
+            // }
+
+            // if()
+
+
 
             $tokenResult = $user->createToken('token-auth')->plainTextToken;
             $respon = [

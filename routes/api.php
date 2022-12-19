@@ -3,8 +3,10 @@
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Presence;
+use App\Models\User;
 use App\Models\Position;
 use App\Models\Permission;
+use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -77,7 +79,36 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/coba', function () {
         // $user = $request->user();
-        return auth()->user()->tokenZ();
+        $token = PersonalAccessToken::where('tokenable_id', auth()->user()->id)->get();
+        // if ($token[0]->created_at <= ) {
+        //     # code...
+        // }
+        PersonalAccessToken::destroy($token[0]->id);
+        return 'anjas';
+    });
+    Route::get('coba-10', function()
+    {
+        # code...
+        $token = PersonalAccessToken::where('tokenable_id', auth()->user()->id)->get();
+        $anjas = "coba";
+        if (
+            Carbon::parse($token[0]->created_at)->addDay()->format('y-m-d') 
+            < now()->format('y-m-d')
+            ){
+            $anjas = "anjas" ;
+        }
+        $data = [
+            'token-parsing' => Carbon::parse($token[0]->created_at)->addDay(-1),
+            'token' => $token[0]->created_at,
+            'sekarang' => now(),
+            'sekarang sesuai hari' => now()->format('y-m-d'),
+            'token-parsing sesuai hari' => Carbon::parse($token[0]->created_at)->format('y-m-d'),
+        ];
+        // return response()->json([$anjas]);
+        // return [$data, $anjas];
+        $user = User::where('email', auth()->user()->email)->first();
+        return $token->first()->created_at;
+
     });
 });
 
