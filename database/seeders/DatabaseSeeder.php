@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Position;
+use App\Models\Presence;
 use App\Models\Attendance;
+use App\Models\Permission;
 use Illuminate\Support\Str;
 use App\Models\PermissionType;
 use Illuminate\Database\Seeder;
@@ -19,7 +21,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // data tabel role
+        // // data tabel role
         // Role::create([
         //     'name' => 'admin'
         // ]);
@@ -35,18 +37,16 @@ class DatabaseSeeder extends Seeder
         //     'posisi' => 'pegawai' 
         // ]);
 
-        // tabel data tipe izin 
+        // // // tabel data tipe izin 
         // PermissionType::create([
         //     'name' => 'wfh'
         // ]);
-        PermissionType::create([
-            'name' => 'sakit'
-        ]);
         // PermissionType::create([
-        //     'name' => 'wfo'
+        //     'name' => 'sakit'
         // ]);
+        
 
-        // tabel data jadwal
+        // // // // tabel data jadwal
         // Attendance::create([
         //     'title' => 'jam masuk pegawai',
         //     'position_id' => '2',
@@ -61,30 +61,21 @@ class DatabaseSeeder extends Seeder
         //     'position_id' => '1',
         // ]);
 
-        // // tabel data user
         // User::create([
-        //     'name' => 'agam',
-        //     'email' => 'agam@gmail.com',
-        //     'email_verified_at' => now(),
-        //     'password' => bcrypt('password'), // password
-        //     'remember_token' => Str::random(10),
+        //     'name' => 'Admin',
         //     'role_id' => 1,
         //     'position_id' => 1,
-        //     'phone' => '081081081',
-        //     'image' => 'image',
-        //     'address' => 'address',
-        // ]);       
-        // User::create([
-        //     'name' => 'takim',
-        //     'email' => 'takim@gmail.com',
+        //     'phone' => '085156327536',
+        //     'image'=> 'image',
+        //     'address' => Str::random(6),
+        //     'email' => 'admin@gmail.com',
         //     'email_verified_at' => now(),
-        //     'password' => bcrypt('password'), // password
+        //     'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         //     'remember_token' => Str::random(10),
-        //     'role_id' => 2,
-        //     'phone' => '081081081',
-        //     'position_id' => 2,
-        //     'image' => 'image',
-        //     'address' => 'address',
-        // ]);
+        //     ]);
+        // User::factory(5)->create();
+        // Permission::factory(5)->create();
+        Presence::factory(12)->create();
+       
     }
 }

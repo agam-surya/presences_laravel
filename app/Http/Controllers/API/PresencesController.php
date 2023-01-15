@@ -7,6 +7,7 @@ use App\Models\Holiday;
 use App\Models\Position;
 use App\Models\Presence;
 use App\Models\Attendance;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,12 +18,18 @@ class PresencesController extends Controller
     {
         // return $attendance->get();
         $user = auth()->user();
-        $presensi =  Presence::where('user_id', $user->id)->latest()->get();
+        $presensi =  Presence::where('user_id', $user->id)->get();
+        $permission =  Permission::where('user_id', $user->id)->get();
+        $izin_pres = [$presensi,$permission];
+        
         return \response()->json([
             "presensi" => $presensi,
+            "permission" => $permission,
             "name" => $user->name,
+     
         ]);
     }
+
     function formMasuk(Request $request)
     {
         $PresensiModel = new Presence;
@@ -32,29 +39,34 @@ class PresencesController extends Controller
             "long" => "required"
         ]);
         $dataDistance = $PresensiModel->distance($request->lat, $request->long);
-
+        $Wfh = Permission::where('user_id',auth()->user()->id)
+        ->where('permission_type_id',1)
+        ->where('aksi','accept')
+        ->latest()
+        ->first();
+        $dataWfh = false;
+        if($Wfh != null){
+            $dataWfh = $Wfh->tanggal_end_izin >= now()->format('Y-m-d');
+        }
         $keterangan = "anda di luar zona absen";
         if ($dataDistance < $radius) {
             $keterangan = "anda di dalam zona absen";
         }
-        // $dataDistance = $PresensiModel->distance(-8.29390,114.3069);
         $attendance = auth()->user()->position->attendance->first();
-        $presensi =  Presence::where('user_id', auth()->user()->id)->latest();
-        $pres = $presensi->get();
+        $presensi =  Presence::where('user_id', auth()->user()->id)->latest()->first();
         $start = $attendance->start_time;
         $limit_start = $attendance->limit_start_time;
         //   jika  start atau limit_start  tidak terpenuhi
         if (!$start || !$limit_start) {
-            if ($pres[0]->presence_enter_time != null) {
+            if ($presensi->presence_enter_time != null) {
                 return response()->json([
                     'message' => 'anda sudah absen masuk'
                 ], 401);
-            } else if ($dataDistance > $radius) {
+            } else if (!$dataWfh && $dataDistance > $radius) {
                 return response()->json([
                     'message' => $keterangan
-                ], 401);
+                ], 420);
             } else {
-
                 $presensi->update([
                     'longitude' => $request->long,
                     'latitude' => $request->lat,
@@ -69,16 +81,17 @@ class PresencesController extends Controller
         } else {
             // definisi dari cekwaktu ,
             // cek apakah waktu saat ini lebih dari jadwal masuk atau tidak
-            $cekWaktu = now()->format('H:i:s') <= $start && now()->format('H:i:s') >= $limit_start;
+            $cekWaktu = now()->format('H:i:s') >= $start && now()->format('H:i:s') <= $limit_start;
+            // return $cekWaktu == true ;
             // cek apakah cekWaktu true atau false
-            if (!$cekWaktu) {
+            if (!$cekWaktu || $presensi->presence_enter_time) {
                 return response()->json([
-                    'description' => 'maaf anda tidak bisa absen'
+                    'message' => 'maaf anda tidak bisa absen'
                 ], 401);
-            } else if ($dataDistance > $radius) {
+            } else if (!$dataWfh && $dataDistance > $radius) {
                 return response()->json([
                     'message' => $keterangan
-                ], 401);
+                ], 420);
             } else {
                 $presensi->update([
                     'longitude' => $request->long,
@@ -94,12 +107,18 @@ class PresencesController extends Controller
         }
     }
 
+
+
     function createPresence()
     {
         // definisi dari attendance id = mengambil data user yang jadwal absensinya sesuai dengan user yang login
         $attendance_id = auth()->user()->position->attendance->first()->id;
+        $user_id = auth()->user()->id;
         // definisi dari presensi = mengambil data 
-        $presensi = Presence::where('attendance_id', $attendance_id)->where('presence_date', now()->format('y-m-d'));
+        $presensi = Presence::where('attendance_id',$attendance_id)
+        ->where('user_id', $user_id)
+        ->where('presence_date', now()->format('Y-m-d'));
+        if($presensi == true){
         // cek var presensi ada atau tidak ada, jika presensi dengan tanggal tidak ada, maka create data presensi
         if ($presensi->count() == 0) {
             Presence::create([
@@ -121,10 +140,26 @@ class PresencesController extends Controller
                 'deskripsi' => 'lanjut ke form absen masuk dan keluar'
             ], 401);
         }
+        }
+        else{
+            return response()->json([
+                'deskriptsi' => 'jadwal untuk staff ini belum tersedia'
+            ],401);
+        }
     }
 
     function formKeluar(Request $request)
     {
+        $Wfh = Permission::where('user_id',auth()->user()->id)
+        ->where('permission_type_id',1)
+        ->where('aksi','accept')
+        ->latest()
+        ->first();
+        $dataWfh = false;
+        if($Wfh != null){
+            $dataWfh = $Wfh->tanggal_end_izin >= now()->format('Y-m-d');
+        }
+        // return auth()->user();
         // var presensimodel = class presence
         $PresensiModel = new Presence;
         $radius = 100;
@@ -132,33 +167,43 @@ class PresencesController extends Controller
             "lat" => "required",
             "long" => "required"
         ]);
+       
         // definisi dari dataDistance = mengambil fungsi distance yang memiliki 2 parameter inputan dari var PresensiModel 
         $dataDistance = $PresensiModel->distance($request->lat, $request->long);
         // definisi dari attendance = mengambil data jadwal absensi yang sama dengan user yang login saat ini  
+        $keterangan = "anda di zona nyaman";
+        if ($dataDistance > $radius) {
+        $keterangan = "anda di zona yang kurang nyaman";
+        }
         $attendance = auth()->user()->position->attendance->first();
         // definisi var presensi yaitu untuk menampung data presence yang dimana attendace_id sama dengan attendance id, user id = user_id yang login saat ini, dan presence_date yang sama dengan tanggal saat ini
-        $presensi =  Presence::where('attendance_id', $attendance->id)
-            ->where('user_id', auth()->user()->id)
-            ->where('presence_date', now()->format('y-m-d'))->latest()->get();
-
+        $presensi =  Presence::where('user_id', auth()->user()->id)
+        ->where('presence_date', now()->format('Y-m-d'))
+        ->latest()->first();
+        
         // definisi enter yaitu untuk menampung data var presensi presence enter time yang pertama 
-        $enter = $presensi[0]->presence_enter_time;
-
+        $enter = Carbon::parse('12:35')->format('H:i:s');
+        if($presensi->presence_enter_time){
+            $enter = $presensi->presence_enter_time;
+        }
         // pengecekan absensi pulang untuk pegwai
         if ($attendance->end_time || $attendance->limit_end_time) {
-            $cekWaktu = now()->format('H:i:s') <= $attendance->end_time && now()->format('H:i:s') >= $attendance->limit_end_time;
+            $cekWaktu = now()->format('H:i:s') >= $attendance->end_time && now()->format('H:i:s') <= $attendance->limit_end_time;
             // $cekUser  = $attendance->position->name = 'dosen' ;
-            if (!$cekWaktu && !$presensi[0]->presence_out_time) {
+            if (!$cekWaktu || $presensi->presence_out_time) {
                 return response()->json([
                     'status' => 'oke',
-                    'description' => 'maaf anda sudah tidak bisa absen keluar'
-                ], 200);
-            } else {
-                $keterangan = "anda di zona yang kurang nyaman";
-                if ($dataDistance < $radius) {
-                    $keterangan = "anda di zona nyaman";
-                }
+                    'message' => 'maaf anda sudah tidak bisa absen keluar'
+                ], 401);
+            } else if(!$dataWfh && $dataDistance > $radius){
                 // return "anda berhasil memasukkan data";
+                return response()->json([
+                    'status' => '',
+                    'message' => 'Anda Berada Di Luar Zona Absen',
+                    'keterangan' => 'diluar zona absen'
+                ], 420);
+            }
+            else {
                 $presensi->update([
                     'longitude' => $request->long,
                     'latitude' => $request->lat,
@@ -166,11 +211,12 @@ class PresencesController extends Controller
                 ]);
                 return response()->json([
                     'status' => 'oke',
-                    'description' => 'anda berhasil absen',
+                    'message' => 'anda berhasil absen',
                     'keterangan' => $keterangan
                 ], 200);
+             }
             }
-        }
+        // }
 
         // pengecekan absensi pulang untuk dosen
         else {
@@ -190,27 +236,34 @@ class PresencesController extends Controller
             $cekWaktu2 = $waktu1 >= $jam2 && $waktu1 <= $limit_jam2;
             $cekWaktu = $cekWaktu1 && $cekWaktu2;
             // jika cekwaktu bernilai true
-            if (!$cekWaktu2 && !$cekWaktu2) {
+            if (!$cekWaktu || $presensi->presence_out_time != null) {
                 return response()->json([
                     'message' => 'anda tidak bisa absen sekarang, coba lagi nanti',
-                ], 200);
-            } else {
-                $keterangan = "anda di zona yang kurang nyaman";
-                if ($dataDistance < $radius) {
-                    $keterangan = "anda di zona nyaman";
-                }
-
-                $presensi[0]->update([
-                    'longitude' => $request->long,
-                    'latitude' => $request->lat,
-                    'presence_out_time' => now()->format('H:i:s'),
-                ]);
+                ], 401);
+            } else if(!$dataWfh && $dataDistance > $radius){
+                // $keterangan = "anda di zona yang kurang nyaman";
+                // if ($dataWfh || $dataDistance < $radius) {
+                //     $keterangan = "anda di zona nyaman";
                 return response()->json([
-                    'message' => 'anda berhasil absen pulang',
-                    'distance' => $dataDistance,
-                    'keterangan' => $keterangan
-                ], 200);
+                    'status' => '',
+                    'message' => 'Anda Berada Di Luar Zona Absen',
+                    'keterangan' => 'diluar zona absen'
+                ], 420);
+                
+            }
+                else {
+                    $presensi->update([
+                        'longitude' => $request->long,
+                        'latitude' => $request->lat,
+                        'presence_out_time' => now()->format('H:i:s'),
+                    ]);
+                    return response()->json([
+                        'message' => 'anda berhasil absen pulang',
+                        'distance' => $dataDistance,
+                        'keterangan' => $keterangan
+                    ], 200);} 
+                
             }
         }
-    }
+    
 }

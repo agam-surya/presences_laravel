@@ -14,11 +14,13 @@ class LoginController extends Controller
     }
 
     public function authenticate(Request $request){
-        $credential =$request->validate([
+
+        $credential = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
+        
         if(Auth::attempt($credential)){
             $request->session()->regenerate();
             // if (auth()->user()->role_id == 1) {
@@ -26,7 +28,7 @@ class LoginController extends Controller
             //     return redirect()->intended('/dashboard');
             // } else {
                 # code...
-                return redirect()->intended('/user');
+                // return redirect()->intended('/user');
             // }
         }
         return back()->with('error', "email atau password salah");

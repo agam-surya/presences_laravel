@@ -38,14 +38,14 @@ class Presence extends Model
             replace 6371000 with 6371 for kilometer and 3956 for miles
             */
             // radius of bounding circle in kilometers
-            $p = Presence::selectRaw("id, latitude,user_id,attendance_id, longitude,presence_date,
+            $p = Presence::selectRaw("id, latitude,user_id,attendance_id, longitude,presence_date,presence_enter_time,presence_out_time,
             ( 6371000 * acos( cos( radians(?) ) *
             cos( radians( latitude ) )
             * cos( radians( longitude ) - radians(?)
             ) + sin( radians(?) ) *
             sin( radians( latitude ) ) )
             ) AS radius ", [$lat, $long, $lat])
-            ->orderBy("id",'desc')
+            ->orderBy("presence_date",'desc')
             ->get();
             return $p;
         

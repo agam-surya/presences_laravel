@@ -27,9 +27,10 @@ class profileController extends Controller
         $user = User::where('id',auth()->user()->id);
         // aturan request name,password dan address 
         $rules = [
-        // 'name'=> 'required',
-        // 'password' => 'required',
-        // 'address' => 'required',
+        'name'=> '',
+        'password' => '',
+        'address' => '',
+        'phone' => '',
         ];       
         $validatedData = $request->validate($rules);
         // jika ada request image maka taruh ke folder storage/post-image

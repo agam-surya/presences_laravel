@@ -29,6 +29,7 @@ class AddColumnInUsersTable extends Migration
                 $table->string('name');
                 $table->string('image')->nullable();
                 $table->string('address');
+                // $table->string('macAdress')->nullable();
             });
         });
     }

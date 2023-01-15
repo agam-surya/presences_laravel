@@ -35,11 +35,7 @@ class AttendanceController extends Controller
      */
     public function create()
     {
-        return view('admin.attendance.create',[
-            "position" => Position::all(),
-            "title" => "attendance",
-            "user" => auth()->user(),
-        ]);
+      
     }
 
     /**
@@ -48,38 +44,31 @@ class AttendanceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // public function store(Request $request)
-    // {
-    //     //
-    //     $input = [
-    //         'position_id' => $request->position_id,
-    //         'title' => $request->title,
-    //         'start_time' => $request->start_time,
-    //         'limit_start_time' => $request->limit_start_time,
-    //         'end_time' => $request->end_time,
-    //         'limit_end_time' => $request->limti_end_time,     
-    //     ];
-    //         // Attendance::create($input);
-    //         try { 
-    //             // mencari apakah posisi ada  yang sama
-    //             $position = Position::get();
-    //             foreach($position as $p);
-    //             $attendance = Attendance::where('position_id', $p->id)->get();
-    //             if(count($attendance) != 1){
-    //                 // kalau tiddak ada, maka create jadwal untuk posisi ini
-    //                 Attendance::create($input);
-    //                 return redirect('/attendance')->with('success','data berhasil di masukkan');
-    //             }else{
-    //                 return redirect('/attendance')->with('success','data gagal dimasukkan');
-    //             }
-    //             // return redirect('/attendance')->with('success','data berhasil di masukkan');
-    //         } catch (\Exception $e) {
-    //             return response()->json([
-    //                 'error' => $e->getMessage(),
-    //             ]);
-    //         }
+    public function store(Request $request)
+    {
+        //
+        $input = [
+            'position_id' => $request->position_id,
+            'title' => $request->title,
+            'start_time' => $request->start_time,
+            'limit_start_time' => $request->limit_start_time,
+            'end_time' => $request->end_time,
+            'limit_end_time' => $request->limit_end_time,     
+        ];
+            try { 
+                // mencari apakah posisi ada  yang sama
+                    $a = Attendance::where('position_id', $input['position_id'])->latest()->first();
+                    if($a != null){
+                        return redirect()->back()->with('error','jadwal untuk posisi tidak boleh sama dengan yang sebelumnya');
+                    }else{
+                        Attendance::create($input);
+                        return redirect('/attendance')->with('success','data berhasil di masukkan');
+                    }
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
 
-    // }
+    }
         function coba (){
             $position = Position::all();
             return $position;

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PersonalAccessToken;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -77,15 +79,31 @@ class AuthController extends Controller
 
 
             // cek jika token user tidak kosong => supaya mencegah bisa lebih dari 1 kali login pada waktu bersamaan, harus logout dulu sebelum login diperangkat lain
+           
 
             $user = User::where('email', $request->email)->first();
 
-            if (!count($user->tokens()->get()) == 0) {
+            $tokenUser = $user->tokens()->get();
+            
+            if (!count($tokenUser) == 0) {
+                // return Carbon::parse($tokenUser[0]->created_at)->format('y-m-d');
+                // return $tokenUser;
+                if(Carbon::parse($tokenUser->first()->created_at)->addMinutes()->format('Y-m-d H:i:s') <= now()->format('Y-m-d H:i:s')){
+                $user->tokens()->delete();
+                return $this->buatToken($request);
+                }
                 $respon = $this->responseApi(403, $user->name, 'Akun Di Perangkat Lain', 'Silahkan Logout Akun Anda Terlebih Dahulu');
                 return response()->json($respon, 403);
             }
 
-            $tokenResult = $user->createToken('token-auth')->plainTextToken;
+            // if()
+            return $this->buatToken($request);
+        }
+    }
+
+    function buatToken(Request $request){
+        $user = User::where('email', $request->email)->first();
+        $tokenResult = $user->createToken('token-auth')->plainTextToken;
             $respon = [
                 'message' => 'Login successfully',
                 'user' => auth()->user(),
@@ -93,8 +111,8 @@ class AuthController extends Controller
 
             ];
             $this->responseApi(200, auth()->user(), 'Login successfully', '', $tokenResult);
+            // if()
             return response()->json($respon, 200);
-        }
     }
 
     public function logout(Request $request)
