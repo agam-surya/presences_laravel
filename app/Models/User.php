@@ -17,10 +17,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    protected $guarded = [
+        'id'
     ];
 
     /**
@@ -42,7 +40,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function role(){
-        return $this->belongsTo(Role::class);
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
+    public function permission()
+    {
+        return $this->hasMany(Permission::class);
+    }
+    public function presence()
+    {
+        return $this->hasMany(Presence::class);
+    }
+
+    public function tokenZ()
+    {
+        return $this->hasMany(PersonalAccessToken::class);
     }
 }

@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     use HasFactory;
+    protected $guarded = ['id'];
+    public function attendance(){
+        return $this->hasMany(Attendance::class);
+    }
 }

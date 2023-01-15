@@ -16,8 +16,14 @@ class AddColumnInPresencesTable extends Migration
         Schema::table('presences', function (Blueprint $table) {
             //
             $table->after('id', function (Blueprint $table) {
-                $table->foreignId('user_id')->constrained();
-                $table->foreignId('attendance_id')->constrained();
+                $table->foreignId('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+                $table->foreignId('attendance_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             });
         });
     }
